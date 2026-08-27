@@ -1,0 +1,44 @@
+---
+import Waves from "./Waves.astro";
+---
+
+<section id="profil" class="px-6 py-12 lg:px-[max(8vw,2rem)]">
+	<div
+		class="relative grid max-w-6xl gap-12 overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#0c0c12] p-8 sm:p-12 lg:grid-cols-[1fr_1.4fr]"
+	>
+		<Waves tone="accent" intensity={0.55} seed={3} />
+		<p
+			class="relative z-1 text-xs font-bold uppercase tracking-[.3em] text-crimson"
+		>
+			01 · Profil
+		</p>
+		<div class="relative z-1">
+			<h2 class="font-display text-4xl leading-tight sm:text-5xl">
+				Designer graphique & direction artistique
+			</h2>
+			<p class="mt-7 max-w-2xl leading-relaxed text-white/85">
+				Mon projet professionnel se construit autour de l'identité
+				visuelle, de la typographie et de la mise en page. Je souhaite
+				évoluer en studio de design graphique pour transformer une idée
+				en système visuel cohérent et soigné.
+			</p>
+			<div class="mt-10 grid gap-3 sm:grid-cols-3">
+				<p
+					class="rounded-3xl border border-crimson/25 bg-black/60 p-5 text-sm"
+				>
+					BUT Métiers du Multimédia et de l'Internet
+				</p>
+				<p
+					class="rounded-3xl border border-crimson/25 bg-black/60 p-5 text-sm"
+				>
+					Delle, France
+				</p>
+				<p
+					class="rounded-3xl border border-crimson/25 bg-black/60 p-5 text-sm"
+				>
+					Identité · Typographie · Mise en page
+				</p>
+			</div>
+		</div>
+	</div>
+</section>

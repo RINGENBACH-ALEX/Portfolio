@@ -1,0 +1,46 @@
+---
+import portrait from "../assets/img/portrait.jpg";
+import Waves from "./Waves.astro";
+---
+
+<section
+    class="relative grid min-h-screen overflow-hidden bg-ink px-6 pt-28 lg:grid-cols-2 lg:px-[max(8vw,2rem)]"
+>
+    <div
+        class="pointer-events-none absolute -right-40 -top-40 h-[40rem] w-[40rem] rounded-full bg-crimson opacity-30 blur-[130px]"
+    >
+    </div>
+    <Waves tone="accent" intensity={0.6} seed={1} />
+
+    <div class="relative z-1 flex max-w-2xl flex-col justify-center py-20">
+        <p
+            class="mb-6 text-xs font-bold uppercase tracking-[.35em] text-crimson"
+        >
+            BUT MMI · Design graphique & direction artistique
+        </p>
+        <h1 class="font-display text-5xl leading-[.95] sm:text-7xl xl:text-8xl">
+            Alex<br />Ringenbach
+        </h1>
+        <p class="mt-8 max-w-lg text-lg leading-relaxed text-white/85">
+            Je conçois des identités visuelles, des supports print et des
+            interfaces soignés, pensés pour leurs publics.
+        </p>
+        <a
+            href="#projets"
+            class="mt-10 w-fit rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson"
+            >Découvrir mes projets</a
+        >
+    </div>
+
+    <div class="relative z-1 flex items-end justify-center py-8 lg:justify-end">
+        <div class="relative w-full max-w-md">
+            <div class="absolute -bottom-5 -left-5 h-full w-full bg-crimson">
+            </div>
+            <img
+                src={portrait.src}
+                alt="Portrait d'Alex Ringenbach"
+                class="relative h-[56vh] w-full object-cover object-top grayscale contrast-125 lg:h-[80vh]"
+            />
+        </div>
+    </div>
+</section>

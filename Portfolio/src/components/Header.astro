@@ -1,0 +1,26 @@
+---
+import logo from "../assets/Logo_Portfolio.svg";
+---
+
+<header class="absolute inset-x-0 top-0 z-10 mx-auto max-w-7xl px-6 py-6">
+	<div
+		class="flex items-center justify-between rounded-full border border-white/15 bg-ink/90 px-4 py-3 shadow-xl backdrop-blur"
+	>
+		<a href="/" class="flex items-center gap-3">
+			<img src={logo.src} alt="Monogramme AR" class="h-10 w-10" />
+			<span class="hidden text-xs tracking-[.25em] sm:block">
+				ALEX RINGENBACH
+			</span>
+		</a>
+		<nav
+			class="flex gap-4 text-[10px] font-bold uppercase tracking-[.18em] sm:gap-7"
+		>
+			<a href="/projets" class="transition hover:text-crimson">Projets</a>
+			<a href="/profil" class="transition hover:text-crimson">Profil</a>
+			<a href="/competences" class="transition hover:text-crimson">
+				Compétences
+			</a>
+			<a href="/contact" class="transition hover:text-crimson">Contact</a>
+		</nav>
+	</div>
+</header>

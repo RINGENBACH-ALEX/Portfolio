@@ -1,0 +1,185 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Waves from "../components/Waves.astro";
+
+// Endpoint FormSubmit (aucun backend requis, offre gratuite).
+// Au 1er envoi tu recevras un mail d'activation a valider une seule fois.
+// Pour masquer l'adresse : cree une cle sur https://formsubmit.co et
+// remplace l'email par la cle (ex. "a1b2c3d4-....").
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
+---
+
+<Layout>
+	<section
+		class="relative min-h-screen overflow-hidden px-6 pb-24 pt-40 lg:px-[max(8vw,2rem)]"
+	>
+		<div
+			class="pointer-events-none absolute -right-40 -top-20 h-[36rem] w-[36rem] rounded-full bg-crimson opacity-25 blur-[130px]"
+		>
+		</div>
+		<Waves tone="accent" intensity={0.7} seed={2} />
+
+		<div class="relative z-1 mx-auto grid max-w-5xl gap-12 lg:grid-cols-[1fr_1.2fr]">
+			<div>
+				<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
+					Contact
+				</p>
+				<h1 class="mt-5 font-display text-5xl">Parlons de votre projet.</h1>
+				<p class="mt-6 text-lg text-white/70">
+					Une question, une opportunité ou une collaboration ?
+					Écrivez-moi, je réponds sous 48&nbsp;h.
+				</p>
+				<a
+					class="mt-8 inline-block text-sm text-white/60 underline decoration-crimson underline-offset-4 transition hover:text-white"
+					href="mailto:alex.ringenbach0@gmail.com"
+					>alex.ringenbach0@gmail.com</a
+				>
+			</div>
+
+			<form
+				id="contact-form"
+				method="POST"
+				action={FORM_ENDPOINT.replace("/ajax/", "/")}
+				class="rounded-[2rem] border border-white/10 bg-[#0c0c12] p-6 sm:p-8"
+			>
+				<div class="grid gap-4 sm:grid-cols-2">
+					<label class="block">
+						<span
+							class="text-[11px] font-bold uppercase tracking-[.2em] text-white/60"
+							>Nom</span
+						>
+						<input
+							name="name"
+							type="text"
+							required
+							autocomplete="name"
+							class="mt-2 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm outline-none transition focus:border-crimson"
+						/>
+					</label>
+					<label class="block">
+						<span
+							class="text-[11px] font-bold uppercase tracking-[.2em] text-white/60"
+							>Email</span
+						>
+						<input
+							name="email"
+							type="email"
+							required
+							autocomplete="email"
+							class="mt-2 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm outline-none transition focus:border-crimson"
+						/>
+					</label>
+				</div>
+
+				<label class="mt-4 block">
+					<span
+						class="text-[11px] font-bold uppercase tracking-[.2em] text-white/60"
+						>Sujet</span
+					>
+					<input
+						name="subject"
+						type="text"
+						required
+						class="mt-2 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm outline-none transition focus:border-crimson"
+					/>
+				</label>
+
+				<label class="mt-4 block">
+					<span
+						class="text-[11px] font-bold uppercase tracking-[.2em] text-white/60"
+						>Message</span
+					>
+					<textarea
+						name="message"
+						rows="5"
+						required
+						class="mt-2 w-full resize-y rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm outline-none transition focus:border-crimson"
+					></textarea>
+				</label>
+
+				{/* anti-spam : champ cache, doit rester vide */}
+				<input
+					type="text"
+					name="_honey"
+					tabindex="-1"
+					autocomplete="off"
+					class="hidden"
+				/>
+				<input type="hidden" name="_captcha" value="false" />
+				<input type="hidden" name="_template" value="table" />
+				<input
+					type="hidden"
+					name="_subject"
+					value="Nouveau message — portfolio"
+				/>
+
+				<button
+					type="submit"
+					class="mt-6 w-full rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.2em] text-white transition hover:bg-white hover:text-crimson disabled:cursor-not-allowed disabled:opacity-50"
+				>
+					Envoyer
+				</button>
+
+				<p
+					id="form-status"
+					class="mt-4 hidden text-sm"
+					role="status"
+					aria-live="polite"
+				>
+				</p>
+			</form>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	const form = document.getElementById("contact-form") as HTMLFormElement | null;
+	const status = document.getElementById("form-status") as HTMLParagraphElement | null;
+	const endpoint =
+		"https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
+
+	function setStatus(msg: string, ok: boolean) {
+		if (!status) return;
+		status.textContent = msg;
+		status.classList.remove("hidden");
+		status.style.color = ok ? "#7cfc98" : "#ff6b81";
+	}
+
+	form?.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		const btn = form.querySelector("button[type=submit]") as HTMLButtonElement;
+		const data = new FormData(form);
+		if (data.get("_honey")) return; // bot
+		btn.disabled = true;
+		btn.textContent = "Envoi…";
+		try {
+			const res = await fetch(endpoint, {
+				method: "POST",
+				headers: { Accept: "application/json" },
+				body: data,
+			});
+			const json = await res.json();
+			if (res.ok) {
+				form.reset();
+				setStatus(
+					"Message envoyé, merci ! Je te réponds très vite.",
+					true,
+				);
+			} else {
+				setStatus(
+					json?.message ||
+						"Envoi impossible pour le moment. Réessaie ou écris-moi par email.",
+					false,
+				);
+			}
+		} catch {
+			setStatus(
+				"Erreur réseau. Réessaie ou écris-moi directement par email.",
+				false,
+			);
+		} finally {
+			btn.disabled = false;
+			btn.textContent = "Envoyer";
+		}
+	});
+</script>

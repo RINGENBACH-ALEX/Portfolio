@@ -1,0 +1,136 @@
+---
+interface Props {
+	class?: string;
+	/** "lines" = lignes qui ondulent (texture) · "ribbons" = bandes pleines (bord de section) */
+	variant?: "lines" | "ribbons";
+	/** couleur des vagues : "light" = blanc, "dark" = noir, "accent" = rouge */
+	tone?: "light" | "dark" | "accent";
+	/** ou placer les vagues */
+	position?: "full" | "top" | "bottom";
+	/** densite / opacite globale */
+	intensity?: number;
+	/** decale le motif pour varier d'une section a l'autre */
+	seed?: number;
+}
+
+const {
+	class: className = "",
+	variant = "lines",
+	tone = "light",
+	position = "full",
+	intensity = 1,
+	seed = 0,
+} = Astro.props;
+
+const W = 1440;
+const VB_H = variant === "ribbons" ? 320 : 600;
+
+// --- variant "lines" : nappe de lignes sinusoidales, tuilee sur 2xW ---
+function wavePath(y: number, amp: number, wavelength: number, phase: number) {
+	const step = wavelength / 10;
+	let d = "";
+	for (let x = 0; x <= W * 2 + step; x += step) {
+		const yy = y + amp * Math.sin((x / wavelength) * Math.PI * 2 + phase);
+		d += (d ? " L" : "M") + x.toFixed(1) + "," + yy.toFixed(1);
+	}
+	return d;
+}
+
+const lineCount = 9;
+const lines = Array.from({ length: lineCount }, (_, i) => {
+	const t = i / (lineCount - 1);
+	return {
+		d: wavePath(
+			60 + t * (VB_H - 120),
+			26 + Math.sin(i * 1.7 + seed) * 14,
+			[360, 288, 240][i % 3],
+			i * 0.9 + seed,
+		),
+		w: 2 + (i % 4) * 1.6,
+		o: (0.12 + 0.06 * Math.sin(i * 2.1 + seed)) * intensity,
+	};
+});
+
+// --- variant "ribbons" : bandes pleines empilees ---
+const ribbons = [
+	{ y: 190, amp: 46, wl: 900, o: 0.06 },
+	{ y: 150, amp: 58, wl: 720, o: 0.08 },
+	{ y: 110, amp: 40, wl: 560, o: 0.05 },
+].map((r, i) => {
+	const phase = seed + i * 1.3;
+	const step = r.wl / 8;
+	let d = `M0,${r.y + r.amp * Math.sin(phase)}`;
+	for (let x = step; x <= W + step; x += step) {
+		const yy = r.y + r.amp * Math.sin((x / r.wl) * Math.PI * 2 + phase);
+		d += ` L${x.toFixed(1)},${yy.toFixed(1)}`;
+	}
+	d += ` L${W},${VB_H} L0,${VB_H} Z`;
+	return { d, o: r.o * intensity };
+});
+
+const color =
+	tone === "light" ? "#fff" : tone === "accent" ? "#c50337" : "#000";
+const posClass = `waves--${position}`;
+---
+
+<div
+	class:list={["waves", `waves--${variant}`, posClass, className]}
+	aria-hidden="true"
+	style={`--wave-color:${color}`}
+>
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox={`0 0 ${W} ${VB_H}`}
+		preserveAspectRatio={variant === "ribbons" ? "none" : "xMidYMid slice"}
+	>
+		{
+			variant === "lines" ? (
+				<g class="waves__drift" fill="none" stroke="currentColor" stroke-linecap="round">
+					{lines.map((l) => (
+						<path d={l.d} stroke-width={l.w} style={`opacity:${l.o.toFixed(3)}`} />
+					))}
+				</g>
+			) : (
+				<g fill="currentColor">
+					{ribbons.map((r) => (
+						<path d={r.d} style={`opacity:${r.o.toFixed(3)}`} />
+					))}
+				</g>
+			)
+		}
+	</svg>
+</div>
+
+<style>
+	.waves {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		overflow: hidden;
+		color: var(--wave-color);
+		z-index: 0;
+	}
+	.waves--top {
+		inset: 0 0 auto 0;
+		height: 45%;
+	}
+	.waves--bottom {
+		inset: auto 0 0 0;
+		height: 45%;
+	}
+	.waves svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.waves__drift {
+			animation: waves-scroll 40s linear infinite;
+		}
+	}
+	@keyframes waves-scroll {
+		to {
+			transform: translateX(-1440px);
+		}
+	}
+</style>

@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+	--font-display: "Bevan", serif;
+	--font-sans: Arial, sans-serif;
+	--color-crimson: #c50337;
+	--color-crimson-soft: #e11d48;
+	--color-ink: #02060e;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+body {
+	background: var(--color-ink);
+	color: #fff;
+}
+::selection {
+	background: var(--color-crimson);
+	color: #fff;
+}
