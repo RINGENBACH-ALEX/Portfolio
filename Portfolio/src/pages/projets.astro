@@ -1,0 +1,109 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Waves from "../components/Waves.astro";
+import ProjetCard from "../components/ProjetCard.astro";
+import { allProjetsByType } from "../backend.mjs";
+
+const TITRES: Record<string, string> = {
+	"site-web": "Sites web",
+	maquette: "Maquettes",
+};
+
+let projets: any[] = [];
+try {
+	projets = await allProjetsByType();
+} catch (e) {
+	console.error(
+		"Page projets — PocketBase indisponible :",
+		(e as Error).message,
+	);
+}
+
+// regroupe par type en gardant l'ordre d'apparition
+const groupes: { nom: string; items: any[] }[] = [];
+for (const p of projets) {
+	const t = p.type || "Autres";
+	let g = groupes.find((x) => x.nom === t);
+	if (!g) {
+		g = { nom: t, items: [] };
+		groupes.push(g);
+	}
+	g.items.push(p);
+}
+---
+
+<Layout>
+	<!-- Intro -->
+	<section
+		class="relative overflow-hidden px-6 pb-20 pt-40 lg:px-[max(8vw,2rem)]"
+	>
+		<div
+			class="pointer-events-none absolute -right-40 -top-24 h-[38rem] w-[38rem] rounded-full bg-crimson opacity-25 blur-[130px]"
+		>
+		</div>
+		<Waves tone="accent" intensity={0.6} seed={5} />
+
+		<div class="relative z-1 mx-auto max-w-6xl">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
+				Réalisations
+			</p>
+			<h1 class="mt-5 font-display text-5xl leading-[.95] sm:text-6xl">
+				Du concept à l'expérience.
+			</h1>
+			<p class="mt-6 max-w-xl text-lg text-white/70">
+				Une sélection de projets menés en formation et en autonomie :
+				sites web et maquettes.
+			</p>
+		</div>
+	</section>
+
+	<!-- Grille -->
+	<section
+		class="relative overflow-hidden bg-linear-to-br from-crimson via-[#5c0420] to-ink px-6 pb-28 pt-16 text-white lg:px-[max(8vw,2rem)]"
+	>
+		<Waves tone="light" intensity={0.8} seed={9} />
+		<div class="relative z-1 mx-auto max-w-6xl">
+			{
+				groupes.map((g) => (
+					<div class="mt-16 first:mt-0">
+						<h2 class="font-display text-3xl sm:text-4xl">
+							{TITRES[g.nom] ?? g.nom}
+						</h2>
+						<div class="mt-8 grid gap-5 md:grid-cols-2">
+							{g.items.map((p) => (
+								<ProjetCard projet={p} class="h-full" />
+							))}
+						</div>
+					</div>
+				))
+			}
+
+			{
+				projets.length === 0 && (
+					<p class="text-white/70">
+						Les projets ne sont pas disponibles pour le moment.
+					</p>
+				)
+			}
+
+			<div class="mt-20">
+				<a
+					href="/"
+					class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:text-crimson"
+				>
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2.5"
+						stroke-linecap="round"
+						stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg
+					>
+					Retour à l'accueil
+				</a>
+			</div>
+		</div>
+	</section>
+</Layout>

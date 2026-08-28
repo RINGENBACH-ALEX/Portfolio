@@ -74,53 +74,6 @@ try {
 	</div>
 </section>
 
-<style>
-	.no-scrollbar {
-		scrollbar-width: none;
-	}
-	.no-scrollbar::-webkit-scrollbar {
-		display: none;
-	}
-</style>
-
 <script>
-	function initCarousel(root: HTMLElement) {
-		const track = root.querySelector<HTMLElement>("[data-track]");
-		const prev = root.querySelector<HTMLButtonElement>("[data-prev]");
-		const next = root.querySelector<HTMLButtonElement>("[data-next]");
-		const more = root.querySelector<HTMLElement>("[data-more]");
-		if (!track || !prev || !next || !more) return;
-
-		const step = () => {
-			const card = track.querySelector<HTMLElement>("li");
-			if (!card) return track.clientWidth;
-			const gap = parseFloat(getComputedStyle(track).columnGap || "16") || 16;
-			return card.offsetWidth + gap;
-		};
-
-		function update() {
-			const atStart = track.scrollLeft <= 2;
-			const atEnd =
-				track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
-
-			prev.classList.toggle("invisible", atStart);
-			next.classList.toggle("invisible", atEnd);
-			more.classList.toggle("hidden", !atEnd);
-			more.classList.toggle("inline-flex", atEnd);
-		}
-
-		prev.addEventListener("click", () =>
-			track.scrollBy({ left: -step(), behavior: "smooth" }),
-		);
-		next.addEventListener("click", () =>
-			track.scrollBy({ left: step(), behavior: "smooth" }),
-		);
-		track.addEventListener("scroll", update, { passive: true });
-		window.addEventListener("resize", update);
-		update();
-	}
-
-	document
-		.querySelectorAll<HTMLElement>("[data-carousel]")
-		.forEach(initCarousel);
+	import "../scripts/carousel.js";
 </script>

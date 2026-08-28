@@ -19,3 +19,11 @@ body {
 	background: var(--color-crimson);
 	color: #fff;
 }
+
+/* piste de carrousel sans barre de défilement visible */
+.no-scrollbar {
+	scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}

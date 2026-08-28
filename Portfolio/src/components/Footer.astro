@@ -6,7 +6,7 @@ const annee = new Date().getFullYear();
 
 const nav = [
 	{ label: "Accueil", href: "/" },
-	{ label: "Projets", href: "/#projets" },
+	{ label: "Projets", href: "/projets" },
 	{ label: "Profil", href: "/profil" },
 	{ label: "Compétences", href: "/competences" },
 	{ label: "Contact", href: "/contact" },
@@ -25,15 +25,16 @@ const reseaux = [
 	>
 		<Waves tone="accent" intensity={0.7} seed={8} />
 
-		<div
-			class="relative z-1 grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr]"
-		>
+		<div class="relative z-1 grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr]">
 			<div>
 				<div class="flex items-center gap-3">
 					<img src={logo.src} alt="Monogramme AR" class="h-10 w-10" />
-					<span class="text-xs tracking-[.25em]">ALEX RINGENBACH</span>
+					<span class="text-xs tracking-[.25em]">ALEX RINGENBACH</span
+					>
 				</div>
-				<p class="mt-7 font-display text-3xl text-crimson">Parlons-en.</p>
+				<p class="mt-7 font-display text-3xl text-crimson">
+					Parlons-en.
+				</p>
 				<p class="mt-3 max-w-xs text-sm leading-relaxed text-white/60">
 					Étudiant en BUT MMI, spécialisé en design graphique.
 					Disponible pour un stage ou une alternance.
@@ -108,7 +109,7 @@ const reseaux = [
 				>
 					Basé à
 				</p>
-				<p class="mt-2 text-sm text-white/60">Delle, France</p>
+				<p class="mt-2 text-sm text-white/60">Montbéliard, France</p>
 			</div>
 		</div>
 
@@ -116,7 +117,13 @@ const reseaux = [
 			class="relative z-1 mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-[10px] uppercase tracking-[.2em] text-white/40 sm:flex-row sm:items-center sm:justify-between"
 		>
 			<p>© {annee} Alex Ringenbach</p>
-			<p>Conçu & développé par Alex Ringenbach</p>
+			<div class="flex flex-wrap gap-x-5 gap-y-2">
+				<a
+					href="/mentions-legales"
+					class="transition hover:text-crimson">Mentions légales</a
+				>
+				<span>Conçu & développé par Alex Ringenbach</span>
+			</div>
 		</div>
 	</div>
 </footer>

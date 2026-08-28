@@ -1,0 +1,145 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Waves from "../../components/Waves.astro";
+import { allProjets, getFileUrl } from "../../backend.mjs";
+
+export async function getStaticPaths() {
+	let projets: any[] = [];
+	try {
+		projets = await allProjets();
+	} catch (e) {
+		console.error(
+			"projet/[id] — PocketBase indisponible :",
+			(e as Error).message,
+		);
+	}
+	return projets.map((p) => ({ params: { id: p.id }, props: { projet: p } }));
+}
+
+const TYPES: Record<string, string> = {
+	"site-web": "Site web",
+	maquette: "Maquette",
+};
+
+const { projet: p } = Astro.props;
+const typeLabel = p.type ? (TYPES[p.type] ?? p.type) : "";
+
+const fichiers: string[] = Array.isArray(p.image)
+	? p.image
+	: p.image
+		? [p.image]
+		: [];
+const images = fichiers.map((f) => getFileUrl(p, f)).filter(Boolean);
+
+let host = "";
+try {
+	if (p.lien) host = new URL(p.lien).hostname.replace(/^www\./, "");
+} catch {
+	/* lien invalide */
+}
+---
+
+<Layout>
+	<section
+		class="relative overflow-hidden px-6 pb-20 pt-40 lg:px-[max(8vw,2rem)]"
+	>
+		<div
+			class="pointer-events-none absolute -right-40 -top-24 h-[38rem] w-[38rem] rounded-full bg-crimson opacity-25 blur-[130px]"
+		>
+		</div>
+		<Waves tone="accent" intensity={0.6} seed={3} />
+
+		<div class="relative z-1 mx-auto max-w-4xl">
+			<a
+				href="/projets"
+				class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-white/60 transition hover:text-crimson"
+			>
+				<svg
+					width="16"
+					height="16"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg
+				>
+				Réalisations
+			</a>
+
+			{
+				typeLabel && (
+					<p class="mt-8 text-xs font-bold uppercase tracking-[.3em] text-crimson">
+						{typeLabel}
+					</p>
+				)
+			}
+			<h1 class="mt-4 font-display text-4xl leading-[.95] sm:text-6xl">
+				{p.titre}
+			</h1>
+			<p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
+				{p.description}
+			</p>
+
+			{
+				p.lien && (
+					<a
+						href={p.lien}
+						target="_blank"
+						rel="noreferrer"
+						class="mt-8 inline-flex items-center gap-2 rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson"
+					>
+						Ouvrir le projet
+						<svg
+							width="15"
+							height="15"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M7 17 17 7M8 7h9v9" />
+						</svg>
+						{host && (
+							<span class="font-normal normal-case tracking-normal opacity-70">
+								{host}
+							</span>
+						)}
+					</a>
+				)
+			}
+		</div>
+	</section>
+
+	{
+		images.length > 0 && (
+			<section class="bg-white px-6 pb-28 pt-16 lg:px-[max(8vw,2rem)]">
+				<div class="mx-auto max-w-6xl">
+					<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
+						Aperçu
+					</p>
+					<div class="mt-8 grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						{images.map((src) => (
+							<a
+								href={src}
+								target="_blank"
+								rel="noreferrer"
+								class="block overflow-hidden rounded-2xl border border-ink/10 transition hover:border-crimson"
+							>
+								<img
+									src={src}
+									alt={p.titre}
+									class="w-full"
+									loading="lazy"
+									decoding="async"
+								/>
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+		)
+	}
+</Layout>

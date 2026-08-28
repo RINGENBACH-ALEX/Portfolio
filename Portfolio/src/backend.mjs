@@ -12,7 +12,13 @@ export function getImageUrl(record, field) {
         return null;
     }
 
-    return pb.files.getURL(record, record[field]);
+    // champ fichier simple (string) ou multiple (array) -> on prend le 1er
+    const file = Array.isArray(record[field]) ? record[field][0] : record[field];
+    if (!file) {
+        return null;
+    }
+
+    return pb.files.getURL(record, file);
 }
 
 export function getFileUrl(record, filename) {
@@ -62,6 +68,40 @@ export async function competencesByMaitrise(maitrise) {
 
 export async function oneCompetenceById(id) {
     const record = await pb.collection("competences").getOne(id);
+    return record;
+}
+
+
+/* ------------------------------------------------------------------ */
+/*  Projets                                                            */
+/*  champs : titre, description, lien (url), image (multiple),          */
+/*           type (site-web | maquette)                                 */
+/* ------------------------------------------------------------------ */
+
+export async function allProjets() {
+    const records = await pb.collection("projets").getFullList({
+        sort: "-created"
+    });
+    return records;
+}
+
+export async function allProjetsByType() {
+    const records = await pb.collection("projets").getFullList({
+        sort: "type,-created"
+    });
+    return records;
+}
+
+export async function projetsByType(type) {
+    const records = await pb.collection("projets").getFullList({
+        filter: `type = "${type}"`,
+        sort: "-created"
+    });
+    return records;
+}
+
+export async function oneProjetById(id) {
+    const record = await pb.collection("projets").getOne(id);
     return record;
 }
 
