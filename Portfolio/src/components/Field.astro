@@ -1,0 +1,47 @@
+---
+interface Props {
+	name: string;
+	label: string;
+	type?: string;
+	autocomplete?: string;
+	/** si défini, rend un <textarea> de N lignes au lieu d'un <input> */
+	rows?: number;
+	class?: string;
+}
+
+const {
+	name,
+	label,
+	type = "text",
+	autocomplete,
+	rows,
+	class: className = "",
+} = Astro.props;
+
+const control =
+	"mt-2 w-full rounded-xl border border-white/25 bg-black/40 px-4 py-3 text-sm transition focus:border-crimson";
+---
+
+<label class:list={["block", className]}>
+	<span class="text-[11px] font-bold uppercase tracking-[.2em] text-white/70">
+		{label}
+	</span>
+	{
+		rows ? (
+			<textarea
+				name={name}
+				rows={rows}
+				required
+				class:list={[control, "resize-y"]}
+			/>
+		) : (
+			<input
+				name={name}
+				type={type}
+				required
+				autocomplete={autocomplete}
+				class={control}
+			/>
+		)
+	}
+</label>

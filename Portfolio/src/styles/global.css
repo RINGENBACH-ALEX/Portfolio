@@ -1,10 +1,17 @@
 @import "tailwindcss";
 
+@font-face {
+	font-family: "Bevan";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("/fonts/bevan-latin.woff2") format("woff2");
+}
+
 @theme {
-	--font-display: "Bevan", serif;
-	--font-sans: Arial, sans-serif;
+	--font-display: "Bevan", Georgia, serif;
+	--font-sans: Arial, Helvetica, sans-serif;
 	--color-crimson: #c50337;
-	--color-crimson-soft: #e11d48;
 	--color-ink: #02060e;
 }
 
@@ -18,6 +25,29 @@ body {
 ::selection {
 	background: var(--color-crimson);
 	color: #fff;
+}
+
+/* Indicateur de focus clavier, visible sur fond clair comme foncé */
+:focus-visible {
+	outline: 2px solid var(--color-crimson);
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+main:focus-visible {
+	outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
 }
 
 /* piste de carrousel sans barre de défilement visible */

@@ -1,0 +1,80 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+	moreHref: string;
+	moreLabel: string;
+	/** nom accessible du carrousel (ex. "Compétences") */
+	label: string;
+	/** "dark" = sur fond clair, "light" = sur fond foncé/rouge */
+	tone?: "light" | "dark";
+}
+
+const { moreHref, moreLabel, label, tone = "dark" } = Astro.props;
+
+const arrow =
+	tone === "light"
+		? "border-white/30 hover:border-white hover:text-white"
+		: "border-ink/20 hover:border-crimson hover:text-crimson";
+const more =
+	tone === "light"
+		? "bg-white text-crimson hover:bg-ink hover:text-white"
+		: "bg-crimson text-white hover:bg-ink";
+---
+
+<div
+	class="carousel mt-12"
+	data-carousel
+	role="group"
+	aria-roledescription="carrousel"
+	aria-label={label}
+>
+	<ul
+		class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2"
+		data-track
+		tabindex="0"
+		aria-label={`${label} — faire défiler`}
+	>
+		<slot />
+	</ul>
+
+	<div class="mt-8 flex items-center gap-3">
+		<button
+			type="button"
+			data-prev
+			aria-label={`${label} précédents`}
+			class:list={[
+				"grid h-11 w-11 place-items-center rounded-full border transition",
+				arrow,
+			]}
+		>
+			<Icon name="chevron-left" size={18} />
+		</button>
+		<button
+			type="button"
+			data-next
+			aria-label={`${label} suivants`}
+			class:list={[
+				"grid h-11 w-11 place-items-center rounded-full border transition",
+				arrow,
+			]}
+		>
+			<Icon name="chevron-right" size={18} />
+		</button>
+		<a
+			href={moreHref}
+			data-more
+			class:list={[
+				"ml-1 hidden items-center gap-2 rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[.18em] transition",
+				more,
+			]}
+		>
+			{moreLabel}
+			<Icon name="arrow-right" />
+		</a>
+	</div>
+</div>
+
+<script>
+	import "../scripts/carousel.js";
+</script>

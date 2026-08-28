@@ -1,7 +1,11 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import Waves from "../../components/Waves.astro";
+import BackLink from "../../components/BackLink.astro";
+import Icon from "../../components/Icon.astro";
 import { allProjets, getFileUrl } from "../../backend.mjs";
+import { hostname } from "../../lib/url.js";
 
 export async function getStaticPaths() {
 	let projets: any[] = [];
@@ -23,23 +27,22 @@ const TYPES: Record<string, string> = {
 
 const { projet: p } = Astro.props;
 const typeLabel = p.type ? (TYPES[p.type] ?? p.type) : "";
+const host = hostname(p.lien);
 
 const fichiers: string[] = Array.isArray(p.image)
 	? p.image
 	: p.image
 		? [p.image]
 		: [];
-const images = fichiers.map((f) => getFileUrl(p, f)).filter(Boolean);
-
-let host = "";
-try {
-	if (p.lien) host = new URL(p.lien).hostname.replace(/^www\./, "");
-} catch {
-	/* lien invalide */
-}
+const images = fichiers
+	.map((f) => getFileUrl(p, f))
+	.filter((u): u is string => Boolean(u));
 ---
 
-<Layout>
+<Layout
+	title={`${p.titre} — Alex Ringenbach`}
+	description={p.description?.slice(0, 155)}
+>
 	<section
 		class="relative overflow-hidden px-6 pb-20 pt-40 lg:px-[max(8vw,2rem)]"
 	>
@@ -50,22 +53,7 @@ try {
 		<Waves tone="accent" intensity={0.6} seed={3} />
 
 		<div class="relative z-1 mx-auto max-w-4xl">
-			<a
-				href="/projets"
-				class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-white/60 transition hover:text-crimson"
-			>
-				<svg
-					width="16"
-					height="16"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg
-				>
-				Réalisations
-			</a>
+			<BackLink href="/projets" label="Réalisations" tone="muted" />
 
 			{
 				typeLabel && (
@@ -90,20 +78,9 @@ try {
 						class="mt-8 inline-flex max-w-full items-center gap-2 rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson"
 					>
 						<span class="shrink-0">Ouvrir le projet</span>
-						<svg
-							width="15"
-							height="15"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2.5"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path d="M7 17 17 7M8 7h9v9" />
-						</svg>
+						<Icon name="external" size={15} class="shrink-0" />
 						{host && (
-							<span class="truncate font-normal normal-case tracking-normal opacity-70">
+							<span class="truncate font-normal normal-case tracking-normal opacity-90">
 								{host}
 							</span>
 						)}
@@ -121,19 +98,22 @@ try {
 						Aperçu
 					</p>
 					<div class="mt-8 grid grid-cols-2 items-start gap-4 lg:grid-cols-3">
-						{images.map((src) => (
+						{images.map((src, i) => (
 							<a
 								href={src}
 								target="_blank"
 								rel="noreferrer"
 								class="block overflow-hidden rounded-2xl border border-ink/10 transition hover:border-crimson"
 							>
-								<img
+								<Image
 									src={src}
-									alt={p.titre}
+									alt={`${p.titre} — aperçu ${i + 1}`}
+									inferSize
+									width={720}
+									format="webp"
+									quality={68}
 									class="w-full"
 									loading="lazy"
-									decoding="async"
 								/>
 							</a>
 						))}

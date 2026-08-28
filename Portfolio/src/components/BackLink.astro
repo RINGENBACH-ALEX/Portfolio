@@ -1,0 +1,36 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+	href?: string;
+	label?: string;
+	/** couleur : "crimson" (fond clair), "white" (fond foncé), "muted" (fond foncé, discret) */
+	tone?: "crimson" | "white" | "muted";
+	class?: string;
+}
+
+const {
+	href = "/",
+	label = "Retour à l'accueil",
+	tone = "crimson",
+	class: className = "",
+} = Astro.props;
+
+const colors = {
+	crimson: "text-crimson hover:text-ink",
+	white: "text-white hover:text-crimson",
+	muted: "text-white/60 hover:text-crimson",
+};
+---
+
+<a
+	href={href}
+	class:list={[
+		"inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] transition",
+		colors[tone],
+		className,
+	]}
+>
+	<Icon name="arrow-left" />
+	{label}
+</a>

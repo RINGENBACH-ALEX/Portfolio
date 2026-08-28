@@ -7,7 +7,8 @@ const pb = new PocketBase("http://127.0.0.1:8090");
 /*  Fichiers                                                           */
 /* ------------------------------------------------------------------ */
 
-export function getImageUrl(record, field) {
+// `thumb` (optionnel) : dimension PocketBase, ex. "600x0" (redimensionne côté serveur)
+export function getImageUrl(record, field, thumb) {
     if (!record || !record[field]) {
         return null;
     }
@@ -18,15 +19,15 @@ export function getImageUrl(record, field) {
         return null;
     }
 
-    return pb.files.getURL(record, file);
+    return pb.files.getURL(record, file, thumb ? { thumb } : {});
 }
 
-export function getFileUrl(record, filename) {
+export function getFileUrl(record, filename, thumb) {
     if (!record || !filename) {
         return null;
     }
 
-    return pb.files.getURL(record, filename);
+    return pb.files.getURL(record, filename, thumb ? { thumb } : {});
 }
 
 

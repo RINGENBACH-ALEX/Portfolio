@@ -1,8 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import BackLink from "../components/BackLink.astro";
 import Waves from "../components/Waves.astro";
 import ProjetCard from "../components/ProjetCard.astro";
 import { allProjetsByType } from "../backend.mjs";
+import { groupBy } from "../lib/group.js";
 
 const TITRES: Record<string, string> = {
 	"site-web": "Sites web",
@@ -19,45 +22,20 @@ try {
 	);
 }
 
-// regroupe par type en gardant l'ordre d'apparition
-const groupes: { nom: string; items: any[] }[] = [];
-for (const p of projets) {
-	const t = p.type || "Autres";
-	let g = groupes.find((x) => x.nom === t);
-	if (!g) {
-		g = { nom: t, items: [] };
-		groupes.push(g);
-	}
-	g.items.push(p);
-}
+const groupes = groupBy(projets, "type");
 ---
 
-<Layout>
-	<!-- Intro -->
-	<section
-		class="relative overflow-hidden px-6 pb-20 pt-40 lg:px-[max(8vw,2rem)]"
-	>
-		<div
-			class="pointer-events-none absolute -right-40 -top-24 h-[38rem] w-[38rem] rounded-full bg-crimson opacity-25 blur-[130px]"
-		>
-		</div>
-		<Waves tone="accent" intensity={0.6} seed={5} />
+<Layout
+	title="Réalisations — Alex Ringenbach"
+	description="Projets de design graphique et de développement web réalisés par Alex Ringenbach."
+>
+	<PageIntro eyebrow="Réalisations" title="Du concept à l'expérience." seed={5}>
+		<p class="mt-6 max-w-xl text-lg text-white/70">
+			Une sélection de projets menés en formation et en autonomie : sites
+			web et maquettes.
+		</p>
+	</PageIntro>
 
-		<div class="relative z-1 mx-auto max-w-6xl">
-			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
-				Réalisations
-			</p>
-			<h1 class="mt-5 font-display text-5xl leading-[.95] sm:text-6xl">
-				Du concept à l'expérience.
-			</h1>
-			<p class="mt-6 max-w-xl text-lg text-white/70">
-				Une sélection de projets menés en formation et en autonomie :
-				sites web et maquettes.
-			</p>
-		</div>
-	</section>
-
-	<!-- Grille -->
 	<section
 		class="relative overflow-hidden bg-linear-to-br from-crimson via-[#5c0420] to-ink px-6 pb-28 pt-16 text-white lg:px-[max(8vw,2rem)]"
 	>
@@ -86,24 +64,7 @@ for (const p of projets) {
 				)
 			}
 
-			<div class="mt-20">
-				<a
-					href="/"
-					class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:text-crimson"
-				>
-					<svg
-						width="16"
-						height="16"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg
-					>
-					Retour à l'accueil
-				</a>
-			</div>
+			<div class="mt-20"><BackLink tone="white" /></div>
 		</div>
 	</section>
 </Layout>

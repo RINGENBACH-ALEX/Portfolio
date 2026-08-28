@@ -1,15 +1,19 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Waves from "../components/Waves.astro";
+import Field from "../components/Field.astro";
 
 // Endpoint FormSubmit (aucun backend requis, offre gratuite).
-// Au 1er envoi tu recevras un mail d'activation a valider une seule fois.
-// Pour masquer l'adresse : cree une cle sur https://formsubmit.co et
-// remplace l'email par la cle (ex. "a1b2c3d4-....").
+// Au 1er envoi tu recevras un mail d'activation à valider une seule fois.
+// Pour masquer l'adresse : crée une clé sur https://formsubmit.co et
+// remplace l'email par la clé (ex. "a1b2c3d4-....").
 const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 ---
 
-<Layout>
+<Layout
+	title="Contact — Alex Ringenbach"
+	description="Contacter Alex Ringenbach, designer graphique, pour un projet, un stage ou une alternance."
+>
 	<section
 		class="relative min-h-screen overflow-hidden px-6 pb-24 pt-40 lg:px-[max(8vw,2rem)]"
 	>
@@ -19,7 +23,9 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 		</div>
 		<Waves tone="accent" intensity={0.7} seed={2} />
 
-		<div class="relative z-1 mx-auto grid max-w-5xl gap-12 lg:grid-cols-[1fr_1.2fr]">
+		<div
+			class="relative z-1 mx-auto grid max-w-5xl gap-12 lg:grid-cols-[1fr_1.2fr]"
+		>
 			<div>
 				<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
 					Contact
@@ -40,69 +46,29 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 				id="contact-form"
 				method="POST"
 				action={FORM_ENDPOINT.replace("/ajax/", "/")}
+				data-endpoint={FORM_ENDPOINT}
+				aria-label="Formulaire de contact"
 				class="rounded-[2rem] border border-white/10 bg-[#0c0c12] p-6 sm:p-8"
 			>
 				<div class="grid gap-4 sm:grid-cols-2">
-					<label class="block">
-						<span
-							class="text-[11px] font-bold uppercase tracking-[.2em] text-white/60"
-							>Nom</span
-						>
-						<input
-							name="name"
-							type="text"
-							required
-							autocomplete="name"
-							class="mt-2 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm outline-none transition focus:border-crimson"
-						/>
-					</label>
-					<label class="block">
-						<span
-							class="text-[11px] font-bold uppercase tracking-[.2em] text-white/60"
-							>Email</span
-						>
-						<input
-							name="email"
-							type="email"
-							required
-							autocomplete="email"
-							class="mt-2 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm outline-none transition focus:border-crimson"
-						/>
-					</label>
-				</div>
-
-				<label class="mt-4 block">
-					<span
-						class="text-[11px] font-bold uppercase tracking-[.2em] text-white/60"
-						>Sujet</span
-					>
-					<input
-						name="subject"
-						type="text"
-						required
-						class="mt-2 w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm outline-none transition focus:border-crimson"
+					<Field name="name" label="Nom" autocomplete="name" />
+					<Field
+						name="email"
+						label="Email"
+						type="email"
+						autocomplete="email"
 					/>
-				</label>
+				</div>
+				<Field name="subject" label="Sujet" class="mt-4" />
+				<Field name="message" label="Message" rows={5} class="mt-4" />
 
-				<label class="mt-4 block">
-					<span
-						class="text-[11px] font-bold uppercase tracking-[.2em] text-white/60"
-						>Message</span
-					>
-					<textarea
-						name="message"
-						rows="5"
-						required
-						class="mt-2 w-full resize-y rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-sm outline-none transition focus:border-crimson"
-					></textarea>
-				</label>
-
-				{/* anti-spam : champ cache, doit rester vide */}
+				{/* anti-spam : champ caché, doit rester vide */}
 				<input
 					type="text"
 					name="_honey"
 					tabindex="-1"
 					autocomplete="off"
+					aria-hidden="true"
 					class="hidden"
 				/>
 				<input type="hidden" name="_captcha" value="false" />
@@ -133,10 +99,10 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 </Layout>
 
 <script>
-	const form = document.getElementById("contact-form") as HTMLFormElement | null;
-	const status = document.getElementById("form-status") as HTMLParagraphElement | null;
-	const endpoint =
-		"https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
+	const form = document.getElementById(
+		"contact-form",
+	) as HTMLFormElement | null;
+	const status = document.getElementById("form-status");
 
 	function setStatus(msg: string, ok: boolean) {
 		if (!status) return;
@@ -147,24 +113,24 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 
 	form?.addEventListener("submit", async (e) => {
 		e.preventDefault();
-		const btn = form.querySelector("button[type=submit]") as HTMLButtonElement;
+		const btn = form.querySelector(
+			"button[type=submit]",
+		) as HTMLButtonElement;
 		const data = new FormData(form);
 		if (data.get("_honey")) return; // bot
+
 		btn.disabled = true;
 		btn.textContent = "Envoi…";
 		try {
-			const res = await fetch(endpoint, {
+			const res = await fetch(form.dataset.endpoint!, {
 				method: "POST",
 				headers: { Accept: "application/json" },
 				body: data,
 			});
-			const json = await res.json();
+			const json = await res.json().catch(() => ({}));
 			if (res.ok) {
 				form.reset();
-				setStatus(
-					"Message envoyé, merci ! Je te réponds très vite.",
-					true,
-				);
+				setStatus("Message envoyé, merci ! Je te réponds très vite.", true);
 			} else {
 				setStatus(
 					json?.message ||

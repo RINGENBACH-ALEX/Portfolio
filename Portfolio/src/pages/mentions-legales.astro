@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Waves from "../components/Waves.astro";
+import PageIntro from "../components/PageIntro.astro";
+import BackLink from "../components/BackLink.astro";
 
 // ⚠️ À compléter / vérifier avant mise en ligne :
 const infos = {
@@ -87,28 +88,12 @@ const sections = [
 ];
 ---
 
-<Layout>
-	<section
-		class="relative overflow-hidden px-6 pb-16 pt-40 lg:px-[max(8vw,2rem)]"
-	>
-		<div
-			class="pointer-events-none absolute -right-40 -top-24 h-[38rem] w-[38rem] rounded-full bg-crimson opacity-25 blur-[130px]"
-		>
-		</div>
-		<Waves tone="accent" intensity={0.6} seed={6} />
-
-		<div class="relative z-1 mx-auto max-w-3xl">
-			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
-				Informations
-			</p>
-			<h1 class="mt-5 font-display text-5xl leading-[.95] sm:text-6xl">
-				Mentions légales
-			</h1>
-			<p class="mt-6 text-lg text-white/70">
-				Dernière mise à jour : {infos.majDate}.
-			</p>
-		</div>
-	</section>
+<Layout title="Mentions légales — Alex Ringenbach">
+	<PageIntro eyebrow="Informations" title="Mentions légales" narrow seed={6}>
+		<p class="mt-6 text-lg text-white/70">
+			Dernière mise à jour : {infos.majDate}.
+		</p>
+	</PageIntro>
 
 	<section class="bg-white px-6 pb-28 pt-16 text-ink lg:px-[max(8vw,2rem)]">
 		<div class="mx-auto max-w-3xl">
@@ -131,24 +116,7 @@ const sections = [
 				))
 			}
 
-			<div class="mt-16">
-				<a
-					href="/"
-					class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-crimson transition hover:text-ink"
-				>
-					<svg
-						width="16"
-						height="16"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg
-					>
-					Retour à l'accueil
-				</a>
-			</div>
+			<div class="mt-16"><BackLink /></div>
 		</div>
 	</section>
 </Layout>
