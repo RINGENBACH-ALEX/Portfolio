@@ -1,8 +1,15 @@
 ---
 import logo from "../assets/Logo_Portfolio.svg";
+
+const links = [
+	{ href: "/projets", label: "Projets" },
+	{ href: "/profil", label: "Profil" },
+	{ href: "/competences", label: "Compétences" },
+	{ href: "/contact", label: "Contact" },
+];
 ---
 
-<header class="absolute inset-x-0 top-0 z-10 mx-auto max-w-7xl px-6 py-6">
+<header class="absolute inset-x-0 top-0 z-30 mx-auto max-w-7xl px-6 py-6">
 	<div
 		class="flex items-center justify-between rounded-full border border-white/15 bg-ink/90 px-4 py-3 shadow-xl backdrop-blur"
 	>
@@ -12,15 +19,104 @@ import logo from "../assets/Logo_Portfolio.svg";
 				ALEX RINGENBACH
 			</span>
 		</a>
+
+		<!-- Nav desktop -->
 		<nav
-			class="flex gap-4 text-[10px] font-bold uppercase tracking-[.18em] sm:gap-7"
+			class="hidden gap-7 text-[10px] font-bold uppercase tracking-[.18em] md:flex"
 		>
-			<a href="/projets" class="transition hover:text-crimson">Projets</a>
-			<a href="/profil" class="transition hover:text-crimson">Profil</a>
-			<a href="/competences" class="transition hover:text-crimson">
-				Compétences
-			</a>
-			<a href="/contact" class="transition hover:text-crimson">Contact</a>
+			{
+				links.map((l) => (
+					<a href={l.href} class="transition hover:text-crimson">
+						{l.label}
+					</a>
+				))
+			}
 		</nav>
+
+		<!-- Bouton menu mobile -->
+		<button
+			type="button"
+			data-menu-btn
+			aria-label="Ouvrir le menu"
+			aria-expanded="false"
+			class="grid h-10 w-10 place-items-center rounded-full border border-white/15 transition hover:border-crimson hover:text-crimson md:hidden"
+		>
+			<svg
+				data-menu-open
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2.5"
+				stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg
+			>
+			<svg
+				data-menu-close
+				class="hidden"
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2.5"
+				stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg
+			>
+		</button>
 	</div>
+
+	<!-- Panneau menu mobile -->
+	<nav
+		data-menu
+		class="mt-2 hidden overflow-hidden rounded-[1.75rem] border border-white/15 bg-ink/95 p-3 shadow-xl backdrop-blur md:hidden"
+	>
+		<ul class="flex flex-col text-xs font-bold uppercase tracking-[.18em]">
+			{
+				links.map((l) => (
+					<li>
+						<a
+							href={l.href}
+							class="block rounded-2xl px-4 py-3.5 transition hover:bg-white/5 hover:text-crimson"
+						>
+							{l.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
 </header>
+
+<script>
+	const btn = document.querySelector<HTMLButtonElement>("[data-menu-btn]");
+	const panel = document.querySelector<HTMLElement>("[data-menu]");
+	const iconOpen = document.querySelector<SVGElement>("[data-menu-open]");
+	const iconClose = document.querySelector<SVGElement>("[data-menu-close]");
+
+	function setOpen(open: boolean) {
+		if (!btn || !panel) return;
+		panel.classList.toggle("hidden", !open);
+		iconOpen?.classList.toggle("hidden", open);
+		iconClose?.classList.toggle("hidden", !open);
+		btn.setAttribute("aria-expanded", String(open));
+	}
+
+	btn?.addEventListener("click", () => {
+		setOpen(panel?.classList.contains("hidden") ?? false);
+	});
+
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") setOpen(false);
+	});
+
+	document.addEventListener("click", (e) => {
+		if (
+			panel &&
+			!panel.classList.contains("hidden") &&
+			!panel.contains(e.target as Node) &&
+			!btn?.contains(e.target as Node)
+		) {
+			setOpen(false);
+		}
+	});
+</script>

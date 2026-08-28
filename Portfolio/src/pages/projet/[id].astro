@@ -87,9 +87,9 @@ try {
 						href={p.lien}
 						target="_blank"
 						rel="noreferrer"
-						class="mt-8 inline-flex items-center gap-2 rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson"
+						class="mt-8 inline-flex max-w-full items-center gap-2 rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson"
 					>
-						Ouvrir le projet
+						<span class="shrink-0">Ouvrir le projet</span>
 						<svg
 							width="15"
 							height="15"
@@ -103,7 +103,7 @@ try {
 							<path d="M7 17 17 7M8 7h9v9" />
 						</svg>
 						{host && (
-							<span class="font-normal normal-case tracking-normal opacity-70">
+							<span class="truncate font-normal normal-case tracking-normal opacity-70">
 								{host}
 							</span>
 						)}
@@ -120,7 +120,7 @@ try {
 					<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
 						Aperçu
 					</p>
-					<div class="mt-8 grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+					<div class="mt-8 grid grid-cols-2 items-start gap-4 lg:grid-cols-3">
 						{images.map((src) => (
 							<a
 								href={src}
