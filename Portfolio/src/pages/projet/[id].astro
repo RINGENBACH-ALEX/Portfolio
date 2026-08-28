@@ -1,11 +1,13 @@
 ---
-import { Image } from "astro:assets";
+import sharp from "sharp";
+import { Image, getImage } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import Waves from "../../components/Waves.astro";
 import BackLink from "../../components/BackLink.astro";
 import Icon from "../../components/Icon.astro";
 import { allProjets, getFileUrl } from "../../backend.mjs";
 import { hostname } from "../../lib/url.js";
+import { breadcrumbNode, abs, excerpt } from "../../lib/seo.js";
 
 export async function getStaticPaths() {
 	let projets: any[] = [];
@@ -34,14 +36,64 @@ const fichiers: string[] = Array.isArray(p.image)
 	: p.image
 		? [p.image]
 		: [];
-const images = fichiers
-	.map((f) => getFileUrl(p, f))
-	.filter((u): u is string => Boolean(u));
+
+// dimensions réelles (pour redimensionner sans déformer) — 1 seul fetch au build
+const MAX_W = 900;
+const images = (
+	await Promise.all(
+		fichiers.map(async (f) => {
+			const url = getFileUrl(p, f);
+			if (!url) return null;
+			try {
+				const buf = Buffer.from(await (await fetch(url)).arrayBuffer());
+				const m = await sharp(buf).metadata();
+				const w = Math.min(m.width ?? MAX_W, MAX_W);
+				const h = Math.round((w * (m.height ?? 1)) / (m.width ?? 1));
+				return { url, w, h };
+			} catch {
+				return { url, w: MAX_W, h: Math.round(MAX_W * 0.66) };
+			}
+		}),
+	)
+).filter((x): x is { url: string; w: number; h: number } => x !== null);
+
+// version optimisée (locale) de la 1re image -> partage social
+const ogImg = images[0]
+	? await getImage({
+			src: images[0].url,
+			width: 1200,
+			height: 630,
+			format: "webp",
+		})
+	: null;
+
+const jsonLd = [
+	breadcrumbNode([
+		{ name: "Accueil", path: "/" },
+		{ name: "Réalisations", path: "/projets" },
+		{ name: p.titre, path: `/projet/${p.id}` },
+	]),
+	{
+		"@type": "CreativeWork",
+		name: p.titre,
+		description: p.description,
+		url: abs(`/projet/${p.id}`),
+		...(p.lien ? { sameAs: p.lien } : {}),
+		...(ogImg ? { image: abs(ogImg.src) } : {}),
+		genre: typeLabel || undefined,
+		author: { "@id": "https://alex-ringenbach.fr/#person" },
+		creator: { "@id": "https://alex-ringenbach.fr/#person" },
+		inLanguage: "fr-FR",
+	},
+];
 ---
 
 <Layout
-	title={`${p.titre} — Alex Ringenbach`}
-	description={p.description?.slice(0, 155)}
+	title={`${p.titre} — ${typeLabel || "Projet"} par Alex Ringenbach`}
+	description={excerpt(p.description)}
+	type="article"
+	image={ogImg?.src}
+	jsonLd={jsonLd}
 >
 	<section
 		class="relative overflow-hidden px-6 pb-20 pt-40 lg:px-[max(8vw,2rem)]"
@@ -98,18 +150,18 @@ const images = fichiers
 						Aperçu
 					</p>
 					<div class="mt-8 grid grid-cols-2 items-start gap-4 lg:grid-cols-3">
-						{images.map((src, i) => (
+						{images.map((im, i) => (
 							<a
-								href={src}
+								href={im.url}
 								target="_blank"
 								rel="noreferrer"
 								class="block overflow-hidden rounded-2xl border border-ink/10 transition hover:border-crimson"
 							>
 								<Image
-									src={src}
+									src={im.url}
 									alt={`${p.titre} — aperçu ${i + 1}`}
-									inferSize
-									width={720}
+									width={im.w}
+									height={im.h}
 									format="webp"
 									quality={68}
 									class="w-full"

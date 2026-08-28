@@ -1,0 +1,33 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BackLink from "../components/BackLink.astro";
+import Waves from "../components/Waves.astro";
+---
+
+<Layout title="Page introuvable — Alex Ringenbach" noindex>
+	<section
+		class="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pt-40 pb-24 lg:px-[max(8vw,2rem)]"
+	>
+		<Waves tone="accent" intensity={0.6} seed={4} />
+		<div class="relative z-1 mx-auto w-full max-w-3xl">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
+				Erreur 404
+			</p>
+			<h1 class="mt-5 font-display text-5xl leading-[.95] sm:text-6xl">
+				Cette page n'existe pas.
+			</h1>
+			<p class="mt-6 text-lg text-white/70">
+				Le lien est peut-être cassé, ou la page a été déplacée.
+			</p>
+			<div class="mt-10 flex flex-wrap gap-4">
+				<BackLink />
+				<a
+					href="/projets"
+					class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-white/70 transition hover:text-crimson"
+				>
+					Voir les projets
+				</a>
+			</div>
+		</div>
+	</section>
+</Layout>

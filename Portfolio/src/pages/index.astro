@@ -4,10 +4,18 @@ import Hero from "../components/Hero.astro";
 import About from "../components/About.astro";
 import Skills from "../components/Skills.astro";
 import Projects from "../components/Projects.astro";
+
+const jsonLd = [
+	{
+		"@type": "ProfilePage",
+		mainEntity: { "@id": "https://alex-ringenbach.fr/#person" },
+	},
+];
 ---
 
 <Layout
 	title="Alex Ringenbach — Designer graphique & direction artistique"
+	jsonLd={jsonLd}
 >
 	<Hero />
 	<About />

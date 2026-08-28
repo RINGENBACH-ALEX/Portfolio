@@ -3,6 +3,19 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import Waves from "../components/Waves.astro";
 import portrait from "../assets/img/portrait.jpg";
+import { breadcrumbNode } from "../lib/seo.js";
+
+const jsonLd = [
+	{
+		"@type": "AboutPage",
+		name: "Profil — Alex Ringenbach",
+		mainEntity: { "@id": "https://alex-ringenbach.fr/#person" },
+	},
+	breadcrumbNode([
+		{ name: "Accueil", path: "/" },
+		{ name: "Profil", path: "/profil" },
+	]),
+];
 
 // ⚠️ Contenu a personnaliser : dates, nom du lycee, loisirs, etc.
 const parcours = [
@@ -49,6 +62,7 @@ const interets = [
 <Layout
 	title="Profil — Alex Ringenbach"
 	description="Parcours, méthode de travail et outils d'Alex Ringenbach, designer graphique en BUT MMI."
+	jsonLd={jsonLd}
 >
 	<!-- Intro -->
 	<section

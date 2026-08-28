@@ -2,6 +2,19 @@
 import Layout from "../layouts/Layout.astro";
 import Waves from "../components/Waves.astro";
 import Field from "../components/Field.astro";
+import { breadcrumbNode } from "../lib/seo.js";
+
+const jsonLd = [
+	{
+		"@type": "ContactPage",
+		name: "Contact — Alex Ringenbach",
+		mainEntity: { "@id": "https://alex-ringenbach.fr/#person" },
+	},
+	breadcrumbNode([
+		{ name: "Accueil", path: "/" },
+		{ name: "Contact", path: "/contact" },
+	]),
+];
 
 // Endpoint FormSubmit (aucun backend requis, offre gratuite).
 // Au 1er envoi tu recevras un mail d'activation à valider une seule fois.
@@ -13,6 +26,7 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 <Layout
 	title="Contact — Alex Ringenbach"
 	description="Contacter Alex Ringenbach, designer graphique, pour un projet, un stage ou une alternance."
+	jsonLd={jsonLd}
 >
 	<section
 		class="relative min-h-screen overflow-hidden px-6 pb-24 pt-40 lg:px-[max(8vw,2rem)]"

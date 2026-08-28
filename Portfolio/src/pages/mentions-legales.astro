@@ -2,6 +2,14 @@
 import Layout from "../layouts/Layout.astro";
 import PageIntro from "../components/PageIntro.astro";
 import BackLink from "../components/BackLink.astro";
+import { breadcrumbNode } from "../lib/seo.js";
+
+const jsonLd = [
+	breadcrumbNode([
+		{ name: "Accueil", path: "/" },
+		{ name: "Mentions légales", path: "/mentions-legales" },
+	]),
+];
 
 // ⚠️ À compléter / vérifier avant mise en ligne :
 const infos = {
@@ -88,7 +96,11 @@ const sections = [
 ];
 ---
 
-<Layout title="Mentions légales — Alex Ringenbach">
+<Layout
+	title="Mentions légales — Alex Ringenbach"
+	description="Mentions légales du portfolio d'Alex Ringenbach : éditeur, hébergement, propriété intellectuelle et données personnelles."
+	jsonLd={jsonLd}
+>
 	<PageIntro eyebrow="Informations" title="Mentions légales" narrow seed={6}>
 		<p class="mt-6 text-lg text-white/70">
 			Dernière mise à jour : {infos.majDate}.

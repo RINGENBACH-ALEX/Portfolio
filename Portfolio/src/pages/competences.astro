@@ -5,6 +5,7 @@ import BackLink from "../components/BackLink.astro";
 import CompetenceCard from "../components/CompetenceCard.astro";
 import { allCompetencesByCategorie } from "../backend.mjs";
 import { groupBy } from "../lib/group.js";
+import { breadcrumbNode } from "../lib/seo.js";
 
 let competences: any[] = [];
 try {
@@ -17,11 +18,28 @@ try {
 }
 
 const groupes = groupBy(competences, "categorie");
+
+const jsonLd = [
+	breadcrumbNode([
+		{ name: "Accueil", path: "/" },
+		{ name: "Compétences", path: "/competences" },
+	]),
+	{
+		"@type": "ItemList",
+		name: "Compétences d'Alex Ringenbach",
+		itemListElement: competences.map((c, i) => ({
+			"@type": "ListItem",
+			position: i + 1,
+			name: c.nom,
+		})),
+	},
+];
 ---
 
 <Layout
 	title="Compétences — Alex Ringenbach"
 	description="Les langages et logiciels maîtrisés par Alex Ringenbach, avec son niveau pour chacun."
+	jsonLd={jsonLd}
 >
 	<PageIntro eyebrow="Compétences" title="Ce que je manie." seed={7}>
 		<p class="mt-6 max-w-xl text-lg text-white/70">

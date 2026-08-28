@@ -6,6 +6,7 @@ import Waves from "../components/Waves.astro";
 import ProjetCard from "../components/ProjetCard.astro";
 import { allProjetsByType } from "../backend.mjs";
 import { groupBy } from "../lib/group.js";
+import { breadcrumbNode, abs } from "../lib/seo.js";
 
 const TITRES: Record<string, string> = {
 	"site-web": "Sites web",
@@ -23,11 +24,32 @@ try {
 }
 
 const groupes = groupBy(projets, "type");
+
+const jsonLd = [
+	breadcrumbNode([
+		{ name: "Accueil", path: "/" },
+		{ name: "Réalisations", path: "/projets" },
+	]),
+	{
+		"@type": "CollectionPage",
+		name: "Réalisations d'Alex Ringenbach",
+		mainEntity: {
+			"@type": "ItemList",
+			itemListElement: projets.map((p, i) => ({
+				"@type": "ListItem",
+				position: i + 1,
+				url: abs(`/projet/${p.id}`),
+				name: p.titre,
+			})),
+		},
+	},
+];
 ---
 
 <Layout
 	title="Réalisations — Alex Ringenbach"
 	description="Projets de design graphique et de développement web réalisés par Alex Ringenbach."
+	jsonLd={jsonLd}
 >
 	<PageIntro eyebrow="Réalisations" title="Du concept à l'expérience." seed={5}>
 		<p class="mt-6 max-w-xl text-lg text-white/70">
