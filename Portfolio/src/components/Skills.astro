@@ -14,31 +14,30 @@ try {
 }
 ---
 
-<section
-	id="competences"
-	class="bg-white px-6 py-24 text-ink lg:px-[max(8vw,2rem)]"
->
-	<div class="mx-auto max-w-6xl">
-		<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
-			02 · Compétences
-		</p>
-		<h2 class="mt-5 max-w-xl font-display text-4xl sm:text-5xl">
-			Les outils que je manie.
-		</h2>
+<section id="competences" class="bg-white py-24 text-ink">
+	<div class="grid-page">
+		<div class="col-full">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
+				02 · Compétences
+			</p>
+			<h2 class="mt-5 max-w-xl font-display text-4xl sm:text-5xl">
+				Les outils que je manie.
+			</h2>
 
-		<Carousel
-			label="Compétences"
-			moreHref="/competences"
-			moreLabel="Voir plus de compétences"
-			tone="dark"
-		>
-			{
-				competences.map((c) => (
-					<li class="w-56 shrink-0 snap-start sm:w-64">
-						<CompetenceCard competence={c} />
-					</li>
-				))
-			}
-		</Carousel>
+			<Carousel
+				label="Compétences"
+				moreHref="/competences"
+				moreLabel="Voir plus de compétences"
+				tone="dark"
+			>
+				{
+					competences.map((c) => (
+						<li class="w-56 shrink-0 snap-start sm:w-64">
+							<CompetenceCard competence={c} />
+						</li>
+					))
+				}
+			</Carousel>
+		</div>
 	</div>
 </section>

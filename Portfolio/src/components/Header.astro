@@ -14,9 +14,11 @@ const isCurrent = (href: string) =>
 	href === "/" ? path === "/" : path.startsWith(href);
 ---
 
-<header class="absolute inset-x-0 top-0 z-30 mx-auto max-w-7xl px-6 py-6">
+<header class="absolute inset-x-0 top-0 z-30 grid-page py-6">
+	{/* Le bord extérieur de la pilule tombe sur les lignes de la grille
+	    (mêmes bords que les cartes du reste du site). */}
 	<div
-		class="flex items-center justify-between rounded-full border border-white/15 bg-ink/90 px-4 py-3 shadow-xl backdrop-blur"
+		class="col-full flex items-center justify-between rounded-full border border-white/15 bg-ink/90 px-5 py-3 shadow-xl backdrop-blur"
 	>
 		<a
 			href="/"
@@ -69,7 +71,7 @@ const isCurrent = (href: string) =>
 		id="menu-mobile"
 		data-menu
 		aria-label="Navigation principale"
-		class="mt-2 hidden overflow-hidden rounded-[1.75rem] border border-white/15 bg-ink/95 p-3 shadow-xl backdrop-blur md:hidden"
+		class="col-full mt-2 hidden overflow-hidden rounded-[1.75rem] border border-white/15 bg-ink/95 p-3 shadow-xl backdrop-blur md:hidden"
 	>
 		<ul
 			role="list"

@@ -17,30 +17,32 @@ try {
 
 <section
 	id="projets"
-	class="relative overflow-hidden bg-linear-to-br from-crimson via-[#5c0420] to-ink px-6 py-24 text-white lg:px-[max(8vw,2rem)]"
+	class="relative overflow-hidden bg-linear-to-br from-crimson via-[#5c0420] to-ink py-24 text-white"
 >
 	<Waves tone="light" intensity={0.9} seed={5} />
-	<div class="relative z-1 mx-auto max-w-6xl">
-		<p class="text-xs font-bold uppercase tracking-[.3em] text-white/70">
-			03 · Réalisations
-		</p>
-		<h2 class="mt-5 font-display text-4xl sm:text-5xl">
-			Du concept à l'expérience.
-		</h2>
+	<div class="grid-page relative z-1">
+		<div class="col-full">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-white/70">
+				03 · Réalisations
+			</p>
+			<h2 class="mt-5 font-display text-4xl sm:text-5xl">
+				Du concept à l'expérience.
+			</h2>
 
-		<Carousel
-			label="Projets"
-			moreHref="/projets"
-			moreLabel="Voir tous les projets"
-			tone="light"
-		>
-			{
-				projets.map((p) => (
-					<li class="w-72 shrink-0 snap-start sm:w-96">
-						<ProjetCard projet={p} class="h-full" />
-					</li>
-				))
-			}
-		</Carousel>
+			<Carousel
+				label="Projets"
+				moreHref="/projets"
+				moreLabel="Voir tous les projets"
+				tone="light"
+			>
+				{
+					projets.map((p) => (
+						<li class="w-72 shrink-0 snap-start sm:w-96">
+							<ProjetCard projet={p} class="h-full" />
+						</li>
+					))
+				}
+			</Carousel>
+		</div>
 	</div>
 </section>

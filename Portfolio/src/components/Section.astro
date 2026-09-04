@@ -1,0 +1,77 @@
+---
+import Waves from "./Waves.astro";
+
+interface Props {
+	id?: string;
+	/** fond : "ink" (défaut), "light" (blanc), "panel" (encart sombre), "crimson" (dégradé) */
+	tone?: "ink" | "light" | "panel" | "crimson";
+	/** rythme vertical : "default", "intro" (dégage le header fixe), "tight", "flush" */
+	space?: "default" | "intro" | "tight" | "flush";
+	/** graine des vagues décoratives ; false pour ne pas en afficher */
+	waves?: number | false;
+	wavesTone?: "accent" | "light";
+	wavesIntensity?: number;
+	/** halo flou crimson en fond */
+	glow?: false | "left" | "right";
+	/** classes ajoutées au conteneur grille interne (ex. items-center) */
+	innerClass?: string;
+	class?: string;
+}
+
+const {
+	id,
+	tone = "ink",
+	space = "default",
+	waves = false,
+	wavesTone = "accent",
+	wavesIntensity = 0.6,
+	glow = false,
+	innerClass = "",
+	class: className = "",
+} = Astro.props;
+
+const tones: Record<string, string> = {
+	ink: "bg-ink text-white",
+	light: "bg-white text-ink",
+	panel: "bg-ink text-white",
+	crimson:
+		"bg-linear-to-br from-crimson via-[#5c0420] to-ink text-white",
+};
+
+const spaces: Record<string, string> = {
+	default: "py-24",
+	intro: "pb-24 pt-40",
+	tight: "py-16",
+	flush: "py-0",
+};
+---
+
+<section
+	id={id}
+	class:list={[
+		"relative overflow-hidden",
+		tones[tone],
+		spaces[space],
+		className,
+	]}
+>
+	{
+		glow && (
+			<div
+				class:list={[
+					"pointer-events-none absolute -top-32 h-[38rem] w-[38rem] rounded-full bg-crimson opacity-25 blur-[130px]",
+					glow === "left" ? "-left-40" : "-right-40",
+				]}
+			/>
+		)
+	}
+	{
+		waves !== false && (
+			<Waves tone={wavesTone} intensity={wavesIntensity} seed={waves} />
+		)
+	}
+
+	<div class:list={["grid-page relative z-1", innerClass]}>
+		<slot />
+	</div>
+</section>

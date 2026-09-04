@@ -15,6 +15,71 @@
 	--color-ink: #02060e;
 }
 
+/* ------------------------------------------------------------------ */
+/*  Grille commune — 12 colonnes (4 mobile / 8 tablette / 12 desktop)  */
+/*  Conteneur centré, largeur max 80rem (1280px), gouttières fixes.    */
+/*  Usage : <div class="grid-page"> puis enfants en col-span-* /       */
+/*  col-start-* (Tailwind), ou raccourcis .col-full / .col-prose.      */
+/* ------------------------------------------------------------------ */
+/* Placé dans la couche "components" pour que les utilitaires Tailwind
+   (col-span-*, col-start-*, lg:*) restent prioritaires sur .col-full. */
+@layer components {
+	.grid-page {
+		display: grid;
+		margin-inline: auto;
+		width: 100%;
+		max-width: 80rem;
+		/* marge latérale — identique pour TOUT bloc de page (header inclus) */
+		padding-inline: 1.5rem;
+		/* gouttière constante : un `gap-6` sur une sous-grille imbriquée
+		   retombe donc exactement sur les lignes de colonnes */
+		column-gap: 1.5rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	@media (width >= 48rem) {
+		.grid-page {
+			padding-inline: 2rem;
+			grid-template-columns: repeat(8, minmax(0, 1fr));
+		}
+	}
+	@media (width >= 64rem) {
+		.grid-page {
+			padding-inline: 2.5rem;
+			grid-template-columns: repeat(12, minmax(0, 1fr));
+		}
+	}
+
+	/* Toute la largeur de la grille, quel que soit le breakpoint */
+	.col-full {
+		grid-column: 1 / -1;
+	}
+
+	/* Colonne de lecture — calée à gauche (même bord que le reste du site),
+	   largeur réduite pour garder une bonne longueur de ligne. */
+	.col-prose {
+		grid-column: 1 / -1;
+	}
+	@media (width >= 48rem) {
+		.col-prose {
+			grid-column: 1 / 7;
+		}
+	}
+	@media (width >= 64rem) {
+		.col-prose {
+			grid-column: 1 / 9;
+		}
+	}
+
+	/* Sous-grille : hérite des colonnes ET des gouttières du parent .grid-page.
+	   Permet d'aligner une liste de cartes (.map) sur la grille de page. */
+	.grid-inherit {
+		display: grid;
+		grid-column: 1 / -1;
+		grid-template-columns: subgrid;
+		column-gap: 1.5rem;
+	}
+}
+
 html {
 	scroll-behavior: smooth;
 }

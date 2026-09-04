@@ -29,7 +29,7 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 	jsonLd={jsonLd}
 >
 	<section
-		class="relative min-h-screen overflow-hidden px-6 pb-24 pt-40 lg:px-[max(8vw,2rem)]"
+		class="relative min-h-screen overflow-hidden pb-24 pt-40"
 	>
 		<div
 			class="pointer-events-none absolute -right-40 -top-20 h-[36rem] w-[36rem] rounded-full bg-crimson opacity-25 blur-[130px]"
@@ -37,10 +37,8 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 		</div>
 		<Waves tone="accent" intensity={0.7} seed={2} />
 
-		<div
-			class="relative z-1 mx-auto grid max-w-5xl gap-12 lg:grid-cols-[1fr_1.2fr]"
-		>
-			<div>
+		<div class="grid-page relative z-1 gap-y-12">
+			<div class="col-full lg:col-span-5">
 				<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
 					Contact
 				</p>
@@ -62,7 +60,7 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 				action={FORM_ENDPOINT.replace("/ajax/", "/")}
 				data-endpoint={FORM_ENDPOINT}
 				aria-label="Formulaire de contact"
-				class="rounded-[2rem] border border-white/10 bg-[#0c0c12] p-6 sm:p-8"
+				class="col-full rounded-[2rem] border border-white/10 bg-[#0c0c12] p-6 sm:p-8 lg:col-span-6 lg:col-start-7"
 			>
 				<div class="grid gap-4 sm:grid-cols-2">
 					<Field name="name" label="Nom" autocomplete="name" />

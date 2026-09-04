@@ -107,28 +107,32 @@ const sections = [
 		</p>
 	</PageIntro>
 
-	<section class="bg-white px-6 pb-28 pt-16 text-ink lg:px-[max(8vw,2rem)]">
-		<div class="mx-auto max-w-3xl">
-			{
-				sections.map((s) => (
-					<article
-						class:list={[
-							"mt-12 first:mt-0",
-							s.important &&
-								"rounded-3xl border border-crimson/30 bg-crimson/5 p-6 sm:p-8",
-						]}
-					>
-						<h2 class="font-display text-2xl sm:text-3xl">
-							{s.titre}
-						</h2>
-						{s.corps.map((p) => (
-							<p class="mt-4 leading-relaxed text-ink/75">{p}</p>
-						))}
-					</article>
-				))
-			}
+	<section class="bg-white pb-28 pt-16 text-ink">
+		<div class="grid-page">
+			<div class="col-prose">
+				{
+					sections.map((s) => (
+						<article
+							class:list={[
+								"mt-12 first:mt-0",
+								s.important &&
+									"rounded-3xl border border-crimson/30 bg-crimson/5 p-6 sm:p-8",
+							]}
+						>
+							<h2 class="font-display text-2xl sm:text-3xl">
+								{s.titre}
+							</h2>
+							{s.corps.map((p) => (
+								<p class="mt-4 leading-relaxed text-ink/75">{p}</p>
+							))}
+						</article>
+					))
+				}
 
-			<div class="mt-16"><BackLink /></div>
+				<div class="mt-16">
+					<BackLink />
+				</div>
+			</div>
 		</div>
 	</section>
 </Layout>

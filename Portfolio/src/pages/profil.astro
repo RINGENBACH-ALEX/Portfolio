@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import Waves from "../components/Waves.astro";
+import Section from "../components/Section.astro";
 import portrait from "../assets/img/portrait.jpg";
 import { breadcrumbNode } from "../lib/seo.js";
 
@@ -65,90 +65,73 @@ const interets = [
 	jsonLd={jsonLd}
 >
 	<!-- Intro -->
-	<section
-		class="relative overflow-hidden px-6 pb-24 pt-40 lg:px-[max(8vw,2rem)]"
-	>
+	<Section space="intro" waves={4} glow="left" innerClass="items-center gap-y-12">
 		<div
-			class="pointer-events-none absolute -left-40 -top-24 h-[38rem] w-[38rem] rounded-full bg-crimson opacity-25 blur-[130px]"
+			class="col-full relative w-full max-w-xs sm:max-w-sm lg:col-span-4 lg:max-w-none"
 		>
+			<div class="absolute -bottom-5 -right-5 h-full w-full bg-crimson"></div>
+			<Image
+				src={portrait}
+				alt="Portrait d'Alex Ringenbach"
+				width={420}
+				densities={[1, 2]}
+				format="webp"
+				quality={58}
+				loading="eager"
+				class="relative h-[30rem] w-full object-cover object-top grayscale contrast-125"
+			/>
 		</div>
-		<Waves tone="accent" intensity={0.6} seed={4} />
 
-		<div
-			class="relative z-1 mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_1.3fr]"
-		>
-			<div class="relative mx-auto w-full max-w-sm">
-				<div class="absolute -bottom-5 -right-5 h-full w-full bg-crimson"></div>
-				<Image
-					src={portrait}
-					alt="Portrait d'Alex Ringenbach"
-					width={420}
-					densities={[1, 2]}
-					format="webp"
-					quality={58}
-					loading="eager"
-					class="relative h-[30rem] w-full object-cover object-top grayscale contrast-125"
-				/>
+		<div class="col-full lg:col-span-7 lg:col-start-6">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
+				Profil
+			</p>
+			<h1 class="mt-5 font-display text-5xl leading-[.95] sm:text-6xl">
+				Alex Ringenbach
+			</h1>
+			<p
+				class="mt-4 text-sm font-bold uppercase tracking-[.25em] text-white/60"
+			>
+				Designer graphique · Direction artistique
+			</p>
+
+			<div class="mt-8 space-y-4 text-lg leading-relaxed text-white/85">
+				<p>
+					Je suis étudiant en BUT MMI à Delle, spécialisé en design
+					graphique. J'aime le moment où une intention un peu floue
+					devient une forme nette : un logo, une grille, une affiche,
+					une interface.
+				</p>
+				<p>
+					Mon travail part presque toujours de la typographie et de la
+					mise en page. J'essaie de construire des systèmes visuels
+					cohérents, qui restent lisibles et vivants d'un support à
+					l'autre — du print à l'écran.
+				</p>
+				<p>
+					Je cherche un studio ou une agence où continuer à apprendre,
+					sur des projets culturels, éditoriaux ou d'identité de marque.
+				</p>
 			</div>
 
-			<div>
-				<p
-					class="text-xs font-bold uppercase tracking-[.3em] text-crimson"
+			<div class="mt-10 flex flex-wrap gap-3">
+				<a
+					href="/contact"
+					class="rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson"
+					>Me contacter</a
 				>
-					Profil
-				</p>
-				<h1
-					class="mt-5 font-display text-5xl leading-[.95] sm:text-6xl"
+				<a
+					href="/projets"
+					class="rounded-full border border-white/30 px-6 py-3 text-xs font-bold uppercase tracking-[.18em] transition hover:border-crimson hover:text-crimson"
+					>Voir mes projets</a
 				>
-					Alex Ringenbach
-				</h1>
-				<p
-					class="mt-4 text-sm font-bold uppercase tracking-[.25em] text-white/60"
-				>
-					Designer graphique · Direction artistique
-				</p>
-
-				<div
-					class="mt-8 space-y-4 text-lg leading-relaxed text-white/85"
-				>
-					<p>
-						Je suis étudiant en BUT MMI à Delle, spécialisé en
-						design graphique. J'aime le moment où une intention un
-						peu floue devient une forme nette : un logo, une grille,
-						une affiche, une interface.
-					</p>
-					<p>
-						Mon travail part presque toujours de la typographie et
-						de la mise en page. J'essaie de construire des systèmes
-						visuels cohérents, qui restent lisibles et vivants d'un
-						support à l'autre — du print à l'écran.
-					</p>
-					<p>
-						Je cherche un studio ou une agence où continuer à
-						apprendre, sur des projets culturels, éditoriaux ou
-						d'identité de marque.
-					</p>
-				</div>
-
-				<div class="mt-10 flex flex-wrap gap-3">
-					<a
-						href="/contact"
-						class="rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson"
-						>Me contacter</a
-					>
-					<a
-						href="/projets"
-						class="rounded-full border border-white/30 px-6 py-3 text-xs font-bold uppercase tracking-[.18em] transition hover:border-crimson hover:text-crimson"
-						>Voir mes projets</a
-					>
-				</div>
 			</div>
 		</div>
-	</section>
+	</Section>
 
 	<!-- Parcours -->
-	<section class="bg-white px-6 py-24 text-ink lg:px-[max(8vw,2rem)]">
-		<div class="mx-auto max-w-4xl">
+	<Section tone="light" space="default" waves={false}>
+		<div class="col-full lg:col-span-8">
 			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
 				Parcours
 			</p>
@@ -177,19 +160,18 @@ const interets = [
 				}
 			</ol>
 		</div>
-	</section>
+	</Section>
 
 	<!-- Ce qui m'anime -->
-	<section class="relative overflow-hidden px-6 py-24 lg:px-[max(8vw,2rem)]">
-		<Waves tone="accent" intensity={0.7} seed={9} />
-		<div class="relative z-1 mx-auto max-w-6xl">
+	<Section waves={9} wavesIntensity={0.7}>
+		<div class="col-full">
 			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
 				Ce qui m'anime
 			</p>
 			<h2 class="mt-5 max-w-xl font-display text-4xl sm:text-5xl">
 				Ma façon de travailler.
 			</h2>
-			<div class="mt-12 grid gap-4 md:grid-cols-3">
+			<div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 				{
 					valeurs.map((v, i) => (
 						<div class="rounded-3xl border border-white/12 bg-white/5 p-6 backdrop-blur-sm">
@@ -205,59 +187,56 @@ const interets = [
 				}
 			</div>
 		</div>
-	</section>
+	</Section>
 
 	<!-- Outils + hors écran -->
-	<section
-		class="relative overflow-hidden bg-linear-to-br from-crimson via-[#5c0420] to-ink px-6 py-24 text-white lg:px-[max(8vw,2rem)]"
+	<Section
+		tone="crimson"
+		waves={6}
+		wavesTone="light"
+		wavesIntensity={0.8}
+		innerClass="gap-y-12"
 	>
-		<Waves tone="light" intensity={0.8} seed={6} />
-		<div class="relative z-1 mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
-			<div>
-				<p
-					class="text-xs font-bold uppercase tracking-[.3em] text-white/70"
-				>
-					Outils
-				</p>
-				<h2 class="mt-5 font-display text-4xl sm:text-5xl">
-					Ce que j'utilise.
-				</h2>
-				<ul class="mt-8 flex flex-wrap gap-3">
-					{
-						outils.map((o) => (
-							<li class="rounded-full border border-white/25 bg-ink/40 px-4 py-2 text-sm font-bold uppercase tracking-[.12em]">
-								{o}
-							</li>
-						))
-					}
-				</ul>
-			</div>
-
-			<div>
-				<p
-					class="text-xs font-bold uppercase tracking-[.3em] text-white/70"
-				>
-					En dehors de l'écran
-				</p>
-				<h2 class="mt-5 font-display text-4xl sm:text-5xl">
-					Là où je pioche.
-				</h2>
-				<p class="mt-6 leading-relaxed text-white/80">
-					Beaucoup de mes idées viennent d'ailleurs que du design :
-					affiches et culture print, character design de manga et
-					d'animation, direction artistique de jeux vidéo, photo et
-					musique.
-				</p>
-				<ul class="mt-6 flex flex-wrap gap-3">
-					{
-						interets.map((it) => (
-							<li class="rounded-full border border-white/25 px-4 py-2 text-sm">
-								{it}
-							</li>
-						))
-					}
-				</ul>
-			</div>
+		<div class="col-full lg:col-span-6">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-white/70">
+				Outils
+			</p>
+			<h2 class="mt-5 font-display text-4xl sm:text-5xl">
+				Ce que j'utilise.
+			</h2>
+			<ul class="mt-8 flex flex-wrap gap-3">
+				{
+					outils.map((o) => (
+						<li class="rounded-full border border-white/25 bg-ink/40 px-4 py-2 text-sm font-bold uppercase tracking-[.12em]">
+							{o}
+						</li>
+					))
+				}
+			</ul>
 		</div>
-	</section>
+
+		<div class="col-full lg:col-span-6">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-white/70">
+				En dehors de l'écran
+			</p>
+			<h2 class="mt-5 font-display text-4xl sm:text-5xl">
+				Là où je pioche.
+			</h2>
+			<p class="mt-6 leading-relaxed text-white/80">
+				Beaucoup de mes idées viennent d'ailleurs que du design :
+				affiches et culture print, character design de manga et
+				d'animation, direction artistique de jeux vidéo, photo et
+				musique.
+			</p>
+			<ul class="mt-6 flex flex-wrap gap-3">
+				{
+					interets.map((it) => (
+						<li class="rounded-full border border-white/25 px-4 py-2 text-sm">
+							{it}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</Section>
 </Layout>

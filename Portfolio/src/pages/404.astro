@@ -1,33 +1,178 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import BackLink from "../components/BackLink.astro";
-import Waves from "../components/Waves.astro";
+import Icon from "../components/Icon.astro";
+
+const handles = [
+	"-left-3 -top-3",
+	"left-1/2 -top-3 -translate-x-1/2",
+	"-right-3 -top-3",
+	"-left-3 top-1/2 -translate-y-1/2",
+	"-right-3 top-1/2 -translate-y-1/2",
+	"-left-3 -bottom-3",
+	"left-1/2 -bottom-3 -translate-x-1/2",
+	"-right-3 -bottom-3",
+];
 ---
 
-<Layout title="Page introuvable — Alex Ringenbach" noindex>
+<Layout title="Erreur 404 — Page introuvable" noindex>
 	<section
-		class="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pt-40 pb-24 lg:px-[max(8vw,2rem)]"
+		class="artboard relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-ink px-6 py-28"
 	>
-		<Waves tone="accent" intensity={0.6} seed={4} />
-		<div class="relative z-1 mx-auto w-full max-w-3xl">
-			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
-				Erreur 404
+		<!-- onglet façon logiciel de design -->
+		<p
+			class="absolute left-6 top-24 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-bold uppercase tracking-[.2em] text-white/50 backdrop-blur md:left-8 lg:left-10"
+		>
+			<span class="h-2 w-2 shrink-0 rounded-full bg-crimson"></span>
+			<span>Artboard<span class="hidden sm:inline"> · page-introuvable</span></span>
+		</p>
+
+		<!-- le 404, centré, avec cadre de sélection façon Figma/Illustrator -->
+		<div class="relative mt-6">
+			<span class="pointer-events-none absolute -inset-5 border border-crimson"
+			></span>
+			{
+				handles.map((pos) => (
+					<span
+						class:list={[
+							"pointer-events-none absolute h-2.5 w-2.5 border border-white bg-crimson",
+							pos,
+						]}
+					/>
+				))
+			}
+			<h1
+				class="glitch block font-display leading-none text-white"
+				data-glitch
+				aria-label="Erreur 404 — page introuvable"
+				style="font-size:clamp(5.5rem,20vw,14rem)">404</h1>
+		</div>
+
+		<!-- panneau propriétés -->
+		<div
+			class="relative mt-14 w-full max-w-md rounded-2xl border border-white/12 bg-[#0c0c12]/90 p-6 text-sm backdrop-blur"
+		>
+			<p class="text-[11px] font-bold uppercase tracking-[.25em] text-crimson">
+				Calque
 			</p>
-			<h1 class="mt-5 font-display text-5xl leading-[.95] sm:text-6xl">
-				Cette page n'existe pas.
-			</h1>
-			<p class="mt-6 text-lg text-white/70">
-				Le lien est peut-être cassé, ou la page a été déplacée.
+
+			<dl class="mt-4 space-y-2.5 text-white/70">
+				<div class="flex justify-between gap-4">
+					<dt>Nom</dt>
+					<dd class="text-white/90">page-introuvable</dd>
+				</div>
+				<div class="flex justify-between gap-4">
+					<dt>Type</dt>
+					<dd class="text-white/90">Erreur 404</dd>
+				</div>
+				<div class="flex items-center justify-between gap-4">
+					<dt>Opacité</dt>
+					<dd class="flex items-center gap-3">
+						<input
+							type="range"
+							min="10"
+							max="100"
+							value="100"
+							data-opacity
+							aria-label="Opacité du chiffre 404"
+							class="h-1 w-32 cursor-pointer appearance-none rounded-full bg-white/20 accent-crimson"
+						/>
+						<span class="w-10 text-right font-mono text-white/90"
+							><span data-op>100</span>%</span
+						>
+					</dd>
+				</div>
+			</dl>
+
+			<p
+				class="mt-5 border-t border-white/10 pt-4 leading-relaxed text-white/70"
+			>
+				Cette page n'a jamais été dessinée — un peu comme une maquette
+				restée dans les brouillons. Le reste du portfolio, lui, existe :
 			</p>
-			<div class="mt-10 flex flex-wrap gap-4">
-				<BackLink />
+
+			<div class="mt-5 flex flex-wrap gap-3">
+				<a
+					href="/"
+					class="inline-flex items-center gap-2 rounded-full bg-crimson px-5 py-2.5 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson"
+				>
+					<Icon name="arrow-left" size={14} />
+					Accueil
+				</a>
 				<a
 					href="/projets"
-					class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-white/70 transition hover:text-crimson"
+					class="inline-flex items-center rounded-full border border-white/25 px-5 py-2.5 text-xs font-bold uppercase tracking-[.18em] transition hover:border-crimson hover:text-crimson"
 				>
-					Voir les projets
+					Projets
+				</a>
+				<a
+					href="/contact"
+					class="inline-flex items-center rounded-full border border-white/25 px-5 py-2.5 text-xs font-bold uppercase tracking-[.18em] transition hover:border-crimson hover:text-crimson"
+				>
+					Contact
 				</a>
 			</div>
 		</div>
 	</section>
 </Layout>
+
+<style>
+	.artboard {
+		/* grille de fond façon plan de travail */
+		background-image: radial-gradient(
+			circle at 1px 1px,
+			rgba(255, 255, 255, 0.06) 1px,
+			transparent 0
+		);
+		background-size: 26px 26px;
+	}
+
+	/* glitch RGB : léger au repos, décrochage périodique */
+	.glitch {
+		text-shadow:
+			0.02em 0 0 rgba(197, 3, 55, 0.75),
+			-0.02em 0 0 rgba(0, 200, 255, 0.4);
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.glitch {
+			animation: g-shift 6s steps(1) infinite;
+		}
+		@keyframes g-shift {
+			0%,
+			90%,
+			100% {
+				text-shadow:
+					0.02em 0 0 rgba(197, 3, 55, 0.75),
+					-0.02em 0 0 rgba(0, 200, 255, 0.4);
+				transform: translateX(0);
+			}
+			91% {
+				text-shadow:
+					0.16em 0 0 rgba(197, 3, 55, 0.95),
+					-0.12em 0 0 rgba(0, 200, 255, 0.7);
+				transform: translateX(-0.03em) skewX(-4deg);
+			}
+			94% {
+				text-shadow:
+					-0.14em 0 0 rgba(197, 3, 55, 0.95),
+					0.1em 0 0 rgba(0, 200, 255, 0.7);
+				transform: translateX(0.03em) skewX(3deg);
+			}
+			97% {
+				text-shadow:
+					0.06em 0.04em 0 rgba(197, 3, 55, 0.9),
+					-0.06em -0.02em 0 rgba(0, 200, 255, 0.6);
+			}
+		}
+	}
+</style>
+
+<script>
+	const opacity = document.querySelector<HTMLInputElement>("[data-opacity]");
+	const glitch = document.querySelector<HTMLElement>("[data-glitch]");
+	const opOut = document.querySelector("[data-op]");
+
+	opacity?.addEventListener("input", () => {
+		if (glitch) glitch.style.opacity = String(Number(opacity.value) / 100);
+		if (opOut) opOut.textContent = opacity.value;
+	});
+</script>

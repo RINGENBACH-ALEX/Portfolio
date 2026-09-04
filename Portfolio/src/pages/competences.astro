@@ -48,30 +48,36 @@ const jsonLd = [
 		</p>
 	</PageIntro>
 
-	<section class="bg-white px-6 pb-28 pt-16 text-ink lg:px-[max(8vw,2rem)]">
-		<div class="mx-auto max-w-6xl">
-			{
-				groupes.map((g) => (
-					<div class="mt-16 first:mt-0">
-						<h2 class="font-display text-3xl sm:text-4xl">{g.nom}</h2>
-						<div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-							{g.items.map((c) => (
-								<CompetenceCard competence={c} />
-							))}
+	<section class="bg-white pb-28 pt-16 text-ink">
+		<div class="grid-page">
+			<div class="col-full">
+				{
+					groupes.map((g) => (
+						<div class="mt-16 first:mt-0">
+							<h2 class="font-display text-3xl sm:text-4xl">
+								{g.nom}
+							</h2>
+							<div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+								{g.items.map((c) => (
+									<CompetenceCard competence={c} />
+								))}
+							</div>
 						</div>
-					</div>
-				))
-			}
+					))
+				}
 
-			{
-				competences.length === 0 && (
-					<p class="text-ink/60">
-						Les compétences ne sont pas disponibles pour le moment.
-					</p>
-				)
-			}
+				{
+					competences.length === 0 && (
+						<p class="text-ink/60">
+							Les compétences ne sont pas disponibles pour le moment.
+						</p>
+					)
+				}
 
-			<div class="mt-20"><BackLink /></div>
+				<div class="mt-20">
+					<BackLink />
+				</div>
+			</div>
 		</div>
 	</section>
 </Layout>
