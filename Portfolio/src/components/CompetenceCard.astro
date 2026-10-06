@@ -21,22 +21,24 @@ const logo = getImageUrl(c, "Logo");
 
 <div
 	class:list={[
-		"overflow-hidden rounded-3xl border border-ink/15 bg-ink/3",
+		"group overflow-hidden rounded-3xl border border-ink/15 bg-ink/3 transition duration-500 hover:-translate-y-1 hover:border-crimson hover:shadow-[0_26px_50px_-30px_rgba(197,3,55,.55)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
 		className,
 	]}
 >
 	{
 		logo && (
-			<Image
-				src={logo}
-				alt={c.nom ?? ""}
-				width={640}
-				height={360}
-				format="webp"
-				quality={72}
-				class="aspect-video w-full bg-white object-cover"
-				loading="lazy"
-			/>
+			<div class="overflow-hidden">
+				<Image
+					src={logo}
+					alt={c.nom ?? ""}
+					width={640}
+					height={360}
+					format="webp"
+					quality={72}
+					class="aspect-video w-full bg-white object-cover transition duration-500 group-hover:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+					loading="lazy"
+				/>
+			</div>
 		)
 	}
 	<div class="p-5">
@@ -46,7 +48,7 @@ const logo = getImageUrl(c, "Logo");
 				[0, 1, 2, 3].map((i) => (
 					<span
 						class:list={[
-							"h-1.5 w-5 rounded-full",
+							"lvl-bar h-1.5 w-5 rounded-full",
 							i < lvl ? "bg-crimson" : "bg-ink/15",
 						]}
 					/>
@@ -60,3 +62,40 @@ const logo = getImageUrl(c, "Logo");
 		</p>
 	</div>
 </div>
+
+<style>
+	/* les jauges se remplissent en entrant dans le viewport, avec un léger décalage.
+	   Uniquement si le scroll-driven animation est supporté -> sinon état final direct. */
+	@media (prefers-reduced-motion: no-preference) {
+		@supports (animation-timeline: view()) {
+			.lvl-bar {
+				transform-origin: left;
+				animation: lvl-grow linear both;
+				animation-timeline: view();
+			}
+			.lvl-bar:nth-child(1) {
+				animation-range: entry 6% cover 14%;
+			}
+			.lvl-bar:nth-child(2) {
+				animation-range: entry 9% cover 17%;
+			}
+			.lvl-bar:nth-child(3) {
+				animation-range: entry 12% cover 20%;
+			}
+			.lvl-bar:nth-child(4) {
+				animation-range: entry 15% cover 23%;
+			}
+		}
+	}
+
+	@keyframes lvl-grow {
+		from {
+			transform: scaleX(0);
+			opacity: 0;
+		}
+		to {
+			transform: scaleX(1);
+			opacity: 1;
+		}
+	}
+</style>

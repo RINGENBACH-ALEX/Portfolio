@@ -9,3 +9,20 @@ export function groupBy(items, key, fallback = "Autres") {
 	}
 	return groups;
 }
+
+/**
+ * Filtres d'une FilterBar : d'abord les catégories de `labels` dans leur
+ * ordre (même vides, compteur à 0), puis celles présentes dans les données
+ * mais absentes de `labels`.
+ */
+export function filtresFrom(items, key, labels, fallback = "Autres") {
+	const count = (v) => items.filter((i) => (i[key] || fallback) === v).length;
+	const extra = groupBy(items, key, fallback)
+		.map((g) => g.nom)
+		.filter((v) => !(v in labels));
+	return [...Object.keys(labels), ...extra].map((value) => ({
+		value,
+		label: labels[value] ?? value,
+		count: count(value),
+	}));
+}

@@ -18,7 +18,7 @@ const isCurrent = (href: string) =>
 	{/* Le bord extérieur de la pilule tombe sur les lignes de la grille
 	    (mêmes bords que les cartes du reste du site). */}
 	<div
-		class="col-full flex items-center justify-between rounded-full border border-white/15 bg-ink/90 px-5 py-3 shadow-xl backdrop-blur"
+		class="col-full flex items-center justify-between rounded-full border border-white/15 bg-ink/90 px-5 py-2 shadow-xl backdrop-blur"
 	>
 		<a
 			href="/"
@@ -28,9 +28,9 @@ const isCurrent = (href: string) =>
 			<img
 				src={logo.src}
 				alt=""
-				width="40"
-				height="40"
-				class="h-10 w-10"
+				width="64"
+				height="64"
+				class="h-14 w-14 sm:h-16 sm:w-16"
 			/>
 			<span class="hidden text-xs tracking-[.25em] sm:block">
 				ALEX RINGENBACH
@@ -62,68 +62,131 @@ const isCurrent = (href: string) =>
 			aria-controls="menu-mobile"
 			class="grid h-10 w-10 place-items-center rounded-full border border-white/15 transition hover:border-crimson hover:text-crimson md:hidden"
 		>
-			<Icon name="menu" size={18} data-menu-open />
-			<Icon name="close" size={18} class="hidden" data-menu-close />
+			<Icon name="menu" size={18} />
 		</button>
 	</div>
 
-	<nav
+	{/* Menu mobile plein écran : gros liens en display séparés par des filets,
+	    e-mail en pied. Masqué via l'attribut `hidden` (prioritaire sur `flex`). */}
+	<div
 		id="menu-mobile"
 		data-menu
-		aria-label="Navigation principale"
-		class="col-full mt-2 hidden overflow-hidden rounded-[1.75rem] border border-white/15 bg-ink/95 p-3 shadow-xl backdrop-blur md:hidden"
+		role="dialog"
+		aria-modal="true"
+		aria-label="Menu"
+		hidden
+		class="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-ink px-6 pb-8 pt-8 md:hidden"
 	>
-		<ul
-			role="list"
-			class="flex flex-col text-xs font-bold uppercase tracking-[.18em]"
+		<div class="flex items-center justify-between">
+			<a href="/" aria-label="Alex Ringenbach — accueil">
+				<img src={logo.src} alt="" width="48" height="48" class="h-12 w-12" />
+			</a>
+			<button
+				type="button"
+				data-menu-close
+				aria-label="Fermer le menu"
+				class="grid h-11 w-11 place-items-center rounded-full border border-white transition hover:border-crimson hover:text-crimson"
+			>
+				<Icon name="close" size={18} />
+			</button>
+		</div>
+
+		<nav aria-label="Navigation principale" class="mt-14">
+			<ul role="list">
+				{
+					links.map((l, i) => (
+						<li class="menu-item border-t border-white/40" style={`--i:${i}`}>
+							<a
+								href={l.href}
+								aria-current={isCurrent(l.href) ? "page" : undefined}
+								class="block py-5 font-display text-3xl transition hover:text-crimson aria-[current=page]:underline aria-[current=page]:decoration-crimson aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
+							>
+								{l.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<a
+			href="mailto:alex.ringenbach0@gmail.com"
+			class="menu-item mt-auto pt-12 text-sm transition hover:text-crimson"
+			style={`--i:${links.length}`}
+			>alex.ringenbach0@gmail.com</a
 		>
-			{
-				links.map((l) => (
-					<li>
-						<a
-							href={l.href}
-							aria-current={isCurrent(l.href) ? "page" : undefined}
-							class="block rounded-2xl px-4 py-3.5 transition hover:bg-white/5 hover:text-crimson aria-[current=page]:text-crimson"
-						>
-							{l.label}
-						</a>
-					</li>
-				))
-			}
-		</ul>
-	</nav>
+	</div>
 </header>
+
+<style>
+	/* Ouverture du menu mobile : le fond descend comme un rideau, puis les
+	   liens remontent en fondu l'un après l'autre (décalage via --i).
+	   Les animations rejouent à chaque ouverture puisque `hidden` repasse
+	   le menu en display:none. Coupées par prefers-reduced-motion (global.css). */
+	[data-menu]:not([hidden]) {
+		animation: menu-rideau 0.45s cubic-bezier(0.65, 0, 0.35, 1) both;
+	}
+	[data-menu]:not([hidden]) .menu-item {
+		animation: menu-item 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+		animation-delay: calc(0.2s + var(--i, 0) * 0.06s);
+	}
+	@keyframes menu-rideau {
+		from {
+			clip-path: inset(0 0 100% 0);
+		}
+		to {
+			clip-path: inset(0);
+		}
+	}
+	@keyframes menu-item {
+		from {
+			opacity: 0;
+			transform: translateY(1.25rem);
+		}
+	}
+</style>
 
 <script>
 	const btn = document.querySelector<HTMLButtonElement>("[data-menu-btn]");
 	const panel = document.querySelector<HTMLElement>("[data-menu]");
-	const iconOpen = document.querySelector<SVGElement>("[data-menu-open]");
-	const iconClose = document.querySelector<SVGElement>("[data-menu-close]");
+	const closeBtn = document.querySelector<HTMLButtonElement>("[data-menu-close]");
 
 	function setOpen(open: boolean) {
-		if (!btn || !panel) return;
-		panel.classList.toggle("hidden", !open);
-		iconOpen?.classList.toggle("hidden", open);
-		iconClose?.classList.toggle("hidden", !open);
+		if (!btn || !panel || panel.hidden === !open) return;
+		panel.hidden = !open;
 		btn.setAttribute("aria-expanded", String(open));
+		// bloque le défilement de la page derrière le menu
+		document.documentElement.style.overflow = open ? "hidden" : "";
+		(open ? closeBtn : btn)?.focus();
 	}
 
-	btn?.addEventListener("click", () =>
-		setOpen(panel?.classList.contains("hidden") ?? false),
-	);
+	btn?.addEventListener("click", () => setOpen(true));
+	closeBtn?.addEventListener("click", () => setOpen(false));
+	// lien vers la page courante / ancre : on referme quand même
+	panel?.addEventListener("click", (e) => {
+		if ((e.target as Element).closest("a")) setOpen(false);
+	});
+
 	document.addEventListener("keydown", (e) => {
-		if (e.key === "Escape" && !panel?.classList.contains("hidden")) {
-			setOpen(false);
-			btn?.focus();
+		if (!panel || panel.hidden) return;
+		if (e.key === "Escape") setOpen(false);
+		// garde le focus clavier dans le menu ouvert
+		if (e.key === "Tab") {
+			const f = panel.querySelectorAll<HTMLElement>("a, button");
+			const first = f[0];
+			const last = f[f.length - 1];
+			if (e.shiftKey && document.activeElement === first) {
+				e.preventDefault();
+				last.focus();
+			} else if (!e.shiftKey && document.activeElement === last) {
+				e.preventDefault();
+				first.focus();
+			}
 		}
 	});
-	document.addEventListener("click", (e) => {
-		if (
-			panel &&
-			!panel.classList.contains("hidden") &&
-			!panel.contains(e.target as Node) &&
-			!btn?.contains(e.target as Node)
-		)
-			setOpen(false);
+
+	// passage en desktop menu ouvert : on referme pour débloquer le scroll
+	matchMedia("(min-width: 48rem)").addEventListener("change", (e) => {
+		if (e.matches) setOpen(false);
 	});
 </script>

@@ -1,0 +1,111 @@
+---
+/**
+ * Barre de filtres collante (segments « Tous » + une valeur par catégorie).
+ * Filtre les éléments de la page marqués `data-filtre-item="<valeur>"` ;
+ * `data-count` (facultatif) = nombre de cartes que contient l'élément,
+ * pour l'annonce aux lecteurs d'écran. Le filtre actif est gardé dans l'URL.
+ * ⚠️ Un parent en overflow-hidden casse le sticky : utiliser overflow-clip.
+ */
+interface Props {
+	filtres: { value: string; label: string; count: number }[];
+	/** libellé accessible du groupe, ex. « Filtrer les projets par type » */
+	label: string;
+	/** paramètre d'URL qui mémorise le filtre */
+	param?: string;
+	/** annonce après filtrage, ex. ["projet affiché", "projets affichés"] */
+	statut: [string, string];
+	/** message affiché quand la catégorie choisie ne contient rien */
+	vide?: string;
+}
+
+const {
+	filtres,
+	label,
+	param = "type",
+	statut,
+	vide = "Rien dans cette catégorie pour le moment.",
+} = Astro.props;
+const total = filtres.reduce((n, f) => n + f.count, 0);
+
+// segment : actif = fond blanc, texte encre
+const segment =
+	"group inline-flex flex-1 items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-3 py-3 text-xs font-bold uppercase tracking-[.12em] text-white transition hover:bg-white/10 aria-pressed:bg-white aria-pressed:text-ink sm:flex-none sm:px-6 sm:tracking-[.18em]";
+const badge =
+	"hidden rounded-full bg-white/15 px-2 py-0.5 text-[10px] tabular-nums tracking-normal group-aria-pressed:bg-ink group-aria-pressed:text-white sm:inline";
+---
+
+<div
+	class="sticky top-4 z-20"
+	data-filtres
+	data-param={param}
+	data-statut={statut.join("|")}
+>
+	<div
+		role="group"
+		aria-label={label}
+		class="flex w-full flex-wrap gap-1 rounded-[1.75rem] border border-white/20 bg-ink/90 p-1.5 shadow-xl backdrop-blur sm:w-fit"
+	>
+		<button type="button" class={segment} data-filtre="tous" aria-pressed="true">
+			Tous
+			<span class={badge}>{total}</span>
+		</button>
+		{
+			filtres.map((f) => (
+				<button
+					type="button"
+					class={segment}
+					data-filtre={f.value}
+					aria-pressed="false"
+				>
+					{f.label}
+					<span class={badge}>{f.count}</span>
+				</button>
+			))
+		}
+	</div>
+	<p class="sr-only" aria-live="polite" data-filtres-statut></p>
+</div>
+<p class="mt-10 text-lg" data-filtres-vide hidden>{vide}</p>
+
+<script>
+	for (const bar of document.querySelectorAll<HTMLElement>("[data-filtres]")) {
+		const param = bar.dataset.param ?? "type";
+		const [sing, plur] = (bar.dataset.statut ?? "").split("|");
+		const boutons = [
+			...bar.querySelectorAll<HTMLButtonElement>("[data-filtre]"),
+		];
+		const items = [
+			...document.querySelectorAll<HTMLElement>("[data-filtre-item]"),
+		];
+		const statut = bar.querySelector<HTMLElement>("[data-filtres-statut]");
+		const msgVide = bar.nextElementSibling as HTMLElement | null;
+
+		const filtrer = (val: string) => {
+			// valeur inconnue (ancien lien partagé…) -> on retombe sur « Tous »
+			if (!boutons.some((b) => b.dataset.filtre === val)) val = "tous";
+			let visibles = 0;
+			for (const el of items) {
+				const ok = val === "tous" || el.dataset.filtreItem === val;
+				el.hidden = !ok;
+				if (ok) visibles += Number(el.dataset.count ?? 1);
+			}
+			for (const b of boutons)
+				b.setAttribute("aria-pressed", String(b.dataset.filtre === val));
+			if (statut) statut.textContent = `${visibles} ${visibles > 1 ? plur : sing}`;
+			if (msgVide?.hasAttribute("data-filtres-vide")) msgVide.hidden = visibles > 0;
+			return val;
+		};
+
+		for (const b of boutons)
+			b.addEventListener("click", () => {
+				const val = filtrer(b.dataset.filtre ?? "tous");
+				// garde le filtre dans l'URL (lien partageable, retour arrière)
+				const url = new URL(location.href);
+				if (val === "tous") url.searchParams.delete(param);
+				else url.searchParams.set(param, val);
+				history.replaceState(null, "", url);
+			});
+
+		filtrer(new URLSearchParams(location.search).get(param) ?? "tous");
+	}
+</script>

@@ -22,7 +22,7 @@ try {
 	<Waves tone="light" intensity={0.9} seed={5} />
 	<div class="grid-page relative z-1">
 		<div class="col-full">
-			<p class="text-xs font-bold uppercase tracking-[.3em] text-white/70">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-white">
 				03 · Réalisations
 			</p>
 			<h2 class="mt-5 font-display text-4xl sm:text-5xl">
@@ -37,8 +37,13 @@ try {
 			>
 				{
 					projets.map((p) => (
-						<li class="w-72 shrink-0 snap-start sm:w-96">
-							<ProjetCard projet={p} class="h-full" />
+						<li class="h-96 w-full shrink-0 snap-start sm:h-104 lg:h-120">
+							<ProjetCard
+								projet={p}
+								variant="split"
+								size="lg"
+								class="h-full"
+							/>
 						</li>
 					))
 				}

@@ -16,47 +16,6 @@ const jsonLd = [
 		{ name: "Profil", path: "/profil" },
 	]),
 ];
-
-// ⚠️ Contenu a personnaliser : dates, nom du lycee, loisirs, etc.
-const parcours = [
-	{
-		date: "2025 — 2028",
-		titre: "BUT Métiers du Multimédia et de l'Internet",
-		lieu: "IUT — NFC",
-		texte: "Design graphique, typographie, UI/UX, motion et culture visuelle.",
-	},
-	{
-		date: "2024",
-		titre: "Baccalauréat Technologique",
-		lieu: "Lycée, Belfort",
-		texte: "Sciences technologiques de l'industrie et du développement durable (STI2D), spécialité Innovation Technologique et Eco-Conception (ITEC).",
-	},
-];
-
-const valeurs = [
-	{
-		t: "La typographie d'abord",
-		d: "Une bonne composition typographique règle la moitié d'un projet. Je choisis mes familles, ma grille et mes contrastes avant la couleur.",
-	},
-	{
-		t: "Le système, pas l'image isolée",
-		d: "Je conçois des identités qui tiennent sur une affiche comme sur un écran : des règles claires, des composants réutilisables.",
-	},
-	{
-		t: "Le détail qui se voit",
-		d: "Alignements, césures, espaces : le soin du détail est ce qui sépare un support correct d'un support juste.",
-	},
-];
-
-const outils = ["Illustrator", "VsCode", "Figma", "DaVinci Resolve", "Blender"];
-
-const interets = [
-	"Affiche & culture print",
-	"Photographie",
-	"Musique",
-	"Manga & animation",
-	"Jeux Vidéo",
-];
 ---
 
 <Layout
@@ -65,11 +24,17 @@ const interets = [
 	jsonLd={jsonLd}
 >
 	<!-- Intro -->
-	<Section space="intro" waves={4} glow="left" innerClass="items-center gap-y-12">
+	<Section
+		space="intro"
+		waves={4}
+		glow="left"
+		innerClass="items-center gap-y-12"
+	>
 		<div
-			class="col-full relative w-full max-w-xs sm:max-w-sm lg:col-span-4 lg:max-w-none"
+			class="col-full relative w-full max-w-xs sm:max-w-sm md:col-span-3 md:max-w-none lg:col-span-4"
 		>
-			<div class="absolute -bottom-5 -right-5 h-full w-full bg-crimson"></div>
+			<div class="absolute -bottom-5 -right-5 h-full w-full bg-crimson">
+			</div>
 			<Image
 				src={portrait}
 				alt="Portrait d'Alex Ringenbach"
@@ -78,29 +43,29 @@ const interets = [
 				format="webp"
 				quality={58}
 				loading="eager"
-				class="relative h-[30rem] w-full object-cover object-top grayscale contrast-125"
+				class="relative h-120 w-full object-cover object-top grayscale contrast-125"
 			/>
 		</div>
 
-		<div class="col-full lg:col-span-7 lg:col-start-6">
-			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
+		<div class="col-full md:col-span-5 md:col-start-4 lg:col-span-7 lg:col-start-6">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-white">
 				Profil
 			</p>
 			<h1 class="mt-5 font-display text-5xl leading-[.95] sm:text-6xl">
 				Alex Ringenbach
 			</h1>
 			<p
-				class="mt-4 text-sm font-bold uppercase tracking-[.25em] text-white/60"
+				class="mt-4 text-sm font-bold uppercase tracking-[.25em] text-white"
 			>
 				Designer graphique · Direction artistique
 			</p>
 
-			<div class="mt-8 space-y-4 text-lg leading-relaxed text-white/85">
+			<div class="mt-8 space-y-4 text-lg leading-relaxed text-white">
 				<p>
-					Je suis étudiant en BUT MMI à Delle, spécialisé en design
-					graphique. J'aime le moment où une intention un peu floue
-					devient une forme nette : un logo, une grille, une affiche,
-					une interface.
+					Je suis étudiant en BUT MMI à Montbeliard, spécialisé en
+					design graphique. J'aime le moment où une intention un peu
+					floue devient une forme nette : un logo, une grille, une
+					affiche, une interface.
 				</p>
 				<p>
 					Mon travail part presque toujours de la typographie et de la
@@ -110,7 +75,8 @@ const interets = [
 				</p>
 				<p>
 					Je cherche un studio ou une agence où continuer à apprendre,
-					sur des projets culturels, éditoriaux ou d'identité de marque.
+					sur des projets culturels, éditoriaux ou d'identité de
+					marque.
 				</p>
 			</div>
 
@@ -140,24 +106,53 @@ const interets = [
 			</h2>
 
 			<ol class="mt-12 space-y-0">
-				{
-					parcours.map((p) => (
-						<li class="grid gap-2 border-t border-ink/15 py-8 sm:grid-cols-[9rem_1fr]">
-							<span class="text-sm font-bold uppercase tracking-[.15em] text-crimson">
-								{p.date}
-							</span>
-							<div>
-								<h3 class="font-display text-2xl">{p.titre}</h3>
-								<p class="mt-1 text-sm font-bold uppercase tracking-widest text-ink/65">
-									{p.lieu}
-								</p>
-								<p class="mt-3 leading-relaxed text-ink/70">
-									{p.texte}
-								</p>
-							</div>
-						</li>
-					))
-				}
+				<li
+					class="grid gap-2 border-t border-ink/15 py-8 sm:grid-cols-[9rem_1fr]"
+				>
+					<span
+						class="text-sm font-bold uppercase tracking-[.15em] text-crimson"
+					>
+						2025 — 2028
+					</span>
+					<div>
+						<h3 class="font-display text-2xl">
+							BUT Métiers du Multimédia et de l'Internet
+						</h3>
+						<p
+							class="mt-1 text-sm font-bold uppercase tracking-widest text-ink/65"
+						>
+							IUT — NFC
+						</p>
+						<p class="mt-3 leading-relaxed text-ink/70">
+							Design graphique, typographie, UI/UX, motion et
+							culture visuelle.
+						</p>
+					</div>
+				</li>
+				<li
+					class="grid gap-2 border-t border-ink/15 py-8 sm:grid-cols-[9rem_1fr]"
+				>
+					<span
+						class="text-sm font-bold uppercase tracking-[.15em] text-crimson"
+					>
+						2024
+					</span>
+					<div>
+						<h3 class="font-display text-2xl">
+							Baccalauréat Technologique
+						</h3>
+						<p
+							class="mt-1 text-sm font-bold uppercase tracking-widest text-ink/65"
+						>
+							Lycée, Belfort
+						</p>
+						<p class="mt-3 leading-relaxed text-ink/70">
+							Sciences technologiques de l'industrie et du
+							développement durable (STI2D), spécialité Innovation
+							Technologique et Eco-Conception (ITEC).
+						</p>
+					</div>
+				</li>
 			</ol>
 		</div>
 	</Section>
@@ -165,26 +160,51 @@ const interets = [
 	<!-- Ce qui m'anime -->
 	<Section waves={9} wavesIntensity={0.7}>
 		<div class="col-full">
-			<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
+			<p class="text-xs font-bold uppercase tracking-[.3em] text-white">
 				Ce qui m'anime
 			</p>
 			<h2 class="mt-5 max-w-xl font-display text-4xl sm:text-5xl">
 				Ma façon de travailler.
 			</h2>
-			<div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-				{
-					valeurs.map((v, i) => (
-						<div class="rounded-3xl border border-white/12 bg-white/5 p-6 backdrop-blur-sm">
-							<span class="text-xs font-bold text-crimson">
-								{String(i + 1).padStart(2, "0")}
-							</span>
-							<h3 class="mt-6 font-display text-2xl">{v.t}</h3>
-							<p class="mt-3 leading-relaxed text-white/70">
-								{v.d}
-							</p>
-						</div>
-					))
-				}
+			<div class="mt-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+				<div
+					class="rounded-3xl border border-white/12 bg-white/5 p-6 backdrop-blur-sm"
+				>
+					<span class="text-xs font-bold text-white">01</span>
+					<h3 class="mt-6 font-display text-2xl">
+						La typographie d'abord
+					</h3>
+					<p class="mt-3 leading-relaxed text-white">
+						Une bonne composition typographique règle la moitié d'un
+						projet. Je choisis mes familles, ma grille et mes
+						contrastes avant la couleur.
+					</p>
+				</div>
+				<div
+					class="rounded-3xl border border-white/12 bg-white/5 p-6 backdrop-blur-sm"
+				>
+					<span class="text-xs font-bold text-white">02</span>
+					<h3 class="mt-6 font-display text-2xl">
+						Le système, pas l'image isolée
+					</h3>
+					<p class="mt-3 leading-relaxed text-white">
+						Je conçois des identités qui tiennent sur une affiche
+						comme sur un écran : des règles claires, des composants
+						réutilisables.
+					</p>
+				</div>
+				<div
+					class="rounded-3xl border border-white/12 bg-white/5 p-6 backdrop-blur-sm"
+				>
+					<span class="text-xs font-bold text-white">03</span>
+					<h3 class="mt-6 font-display text-2xl">
+						Le détail qui se voit
+					</h3>
+					<p class="mt-3 leading-relaxed text-white">
+						Alignements, césures, espaces : le soin du détail est ce
+						qui sépare un support correct d'un support juste.
+					</p>
+				</div>
 			</div>
 		</div>
 	</Section>
@@ -198,44 +218,84 @@ const interets = [
 		innerClass="gap-y-12"
 	>
 		<div class="col-full lg:col-span-6">
-			<p class="text-xs font-bold uppercase tracking-[.3em] text-white/70">
+			<p
+				class="text-xs font-bold uppercase tracking-[.3em] text-white"
+			>
 				Outils
 			</p>
 			<h2 class="mt-5 font-display text-4xl sm:text-5xl">
 				Ce que j'utilise.
 			</h2>
 			<ul class="mt-8 flex flex-wrap gap-3">
-				{
-					outils.map((o) => (
-						<li class="rounded-full border border-white/25 bg-ink/40 px-4 py-2 text-sm font-bold uppercase tracking-[.12em]">
-							{o}
-						</li>
-					))
-				}
+				<li
+					class="rounded-full border border-white/25 bg-ink/40 px-4 py-2 text-sm font-bold uppercase tracking-[.12em]"
+				>
+					Illustrator
+				</li>
+				<li
+					class="rounded-full border border-white/25 bg-ink/40 px-4 py-2 text-sm font-bold uppercase tracking-[.12em]"
+				>
+					VsCode
+				</li>
+				<li
+					class="rounded-full border border-white/25 bg-ink/40 px-4 py-2 text-sm font-bold uppercase tracking-[.12em]"
+				>
+					Figma
+				</li>
+				<li
+					class="rounded-full border border-white/25 bg-ink/40 px-4 py-2 text-sm font-bold uppercase tracking-[.12em]"
+				>
+					DaVinci Resolve
+				</li>
+				<li
+					class="rounded-full border border-white/25 bg-ink/40 px-4 py-2 text-sm font-bold uppercase tracking-[.12em]"
+				>
+					Blender
+				</li>
 			</ul>
 		</div>
 
 		<div class="col-full lg:col-span-6">
-			<p class="text-xs font-bold uppercase tracking-[.3em] text-white/70">
+			<p
+				class="text-xs font-bold uppercase tracking-[.3em] text-white"
+			>
 				En dehors de l'écran
 			</p>
 			<h2 class="mt-5 font-display text-4xl sm:text-5xl">
 				Là où je pioche.
 			</h2>
-			<p class="mt-6 leading-relaxed text-white/80">
+			<p class="mt-6 leading-relaxed text-white">
 				Beaucoup de mes idées viennent d'ailleurs que du design :
 				affiches et culture print, character design de manga et
 				d'animation, direction artistique de jeux vidéo, photo et
 				musique.
 			</p>
 			<ul class="mt-6 flex flex-wrap gap-3">
-				{
-					interets.map((it) => (
-						<li class="rounded-full border border-white/25 px-4 py-2 text-sm">
-							{it}
-						</li>
-					))
-				}
+				<li
+					class="rounded-full border border-white/25 px-4 py-2 text-sm"
+				>
+					Affiche & culture print
+				</li>
+				<li
+					class="rounded-full border border-white/25 px-4 py-2 text-sm"
+				>
+					Photographie
+				</li>
+				<li
+					class="rounded-full border border-white/25 px-4 py-2 text-sm"
+				>
+					Musique
+				</li>
+				<li
+					class="rounded-full border border-white/25 px-4 py-2 text-sm"
+				>
+					Manga & animation
+				</li>
+				<li
+					class="rounded-full border border-white/25 px-4 py-2 text-sm"
+				>
+					Jeux Vidéo
+				</li>
 			</ul>
 		</div>
 	</Section>

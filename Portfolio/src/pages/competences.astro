@@ -3,8 +3,9 @@ import Layout from "../layouts/Layout.astro";
 import PageIntro from "../components/PageIntro.astro";
 import BackLink from "../components/BackLink.astro";
 import CompetenceCard from "../components/CompetenceCard.astro";
+import FilterBar from "../components/FilterBar.astro";
 import { allCompetencesByCategorie } from "../backend.mjs";
-import { groupBy } from "../lib/group.js";
+import { groupBy, filtresFrom } from "../lib/group.js";
 import { breadcrumbNode } from "../lib/seo.js";
 
 let competences: any[] = [];
@@ -17,7 +18,22 @@ try {
 	);
 }
 
-const groupes = groupBy(competences, "categorie");
+// catégories PocketBase, dans l'ordre d'affichage, avec leur libellé court
+// pour la barre de filtres (affichées même sans compétence, compteur à 0)
+const CATEGORIES: Record<string, string> = {
+	Logiciel: "Logiciels",
+	"Langage de programmation": "Langages",
+	IA: "IA",
+	"Soft Skill": "Soft skills",
+};
+const ordre = Object.keys(CATEGORIES);
+const rang = (nom: string) =>
+	ordre.includes(nom) ? ordre.indexOf(nom) : ordre.length;
+
+const groupes = groupBy(competences, "categorie").sort(
+	(a, b) => rang(a.nom) - rang(b.nom),
+);
+const filtres = filtresFrom(competences, "categorie", CATEGORIES);
 
 const jsonLd = [
 	breadcrumbNode([
@@ -38,13 +54,15 @@ const jsonLd = [
 
 <Layout
 	title="Compétences — Alex Ringenbach"
-	description="Les langages et logiciels maîtrisés par Alex Ringenbach, avec son niveau pour chacun."
+	description="Savoir-être, logiciels, langages et usage de l'IA : les compétences d'Alex Ringenbach, designer graphique, avec son niveau pour chacune."
 	jsonLd={jsonLd}
 >
-	<PageIntro eyebrow="Compétences" title="Ce que je manie." seed={7}>
-		<p class="mt-6 max-w-xl text-lg text-white/70">
-			Les langages et les logiciels sur lesquels je m'appuie, avec mon
-			niveau de maîtrise pour chacun.
+	<PageIntro eyebrow="Compétences" title="Ce que j'apporte." seed={7}>
+		<p class="mt-6 max-w-xl text-lg text-white">
+			Les outils ne font pas tout : ma façon de travailler compte autant que
+			les logiciels et les langages que j'utilise, ou que l'IA que
+			j'intègre à ma pratique. Pour chaque compétence, mon niveau de
+			maîtrise.
 		</p>
 	</PageIntro>
 
@@ -52,12 +70,28 @@ const jsonLd = [
 		<div class="grid-page">
 			<div class="col-full">
 				{
+					competences.length > 0 && (
+						<FilterBar
+							filtres={filtres}
+							label="Filtrer les compétences par catégorie"
+							param="categorie"
+							statut={["compétence affichée", "compétences affichées"]}
+							vide="Aucune compétence dans cette catégorie pour le moment."
+						/>
+					)
+				}
+
+				{
 					groupes.map((g) => (
-						<div class="mt-16 first:mt-0">
+						<div
+							class="mt-12"
+							data-filtre-item={g.nom}
+							data-count={g.items.length}
+						>
 							<h2 class="font-display text-3xl sm:text-4xl">
 								{g.nom}
 							</h2>
-							<div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+							<div class="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
 								{g.items.map((c) => (
 									<CompetenceCard competence={c} />
 								))}

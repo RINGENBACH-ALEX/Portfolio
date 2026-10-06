@@ -10,90 +10,6 @@ const jsonLd = [
 		{ name: "Mentions légales", path: "/mentions-legales" },
 	]),
 ];
-
-// ⚠️ À compléter / vérifier avant mise en ligne :
-const infos = {
-	editeur: "Alex Ringenbach",
-	statut: "Étudiant en BUT MMI — site personnel non professionnel",
-	lieu: "Montbéliard, France",
-	email: "alex.ringenbach0@gmail.com",
-	directeur: "Alex Ringenbach",
-	hebergeur: {
-		nom: "Infomaniak Network SA",
-		adresse: "Rue Eugène-Marziano 25, 1227 Les Acacias (Genève), Suisse",
-		contact: "+41 22 820 35 44 — infomaniak.com",
-	},
-	majDate: "28 août 2026",
-};
-
-const sections = [
-	{
-		titre: "1. Éditeur du site",
-		corps: [
-			`Le présent site est édité à titre personnel par ${infos.editeur} (${infos.statut}), basé à ${infos.lieu}.`,
-			`Contact : ${infos.email}`,
-		],
-	},
-	{
-		titre: "2. Directeur de la publication",
-		corps: [`${infos.directeur}.`],
-	},
-	{
-		titre: "3. Hébergement",
-		corps: [
-			`Hébergeur : ${infos.hebergeur.nom}`,
-			`Adresse : ${infos.hebergeur.adresse}`,
-			`Contact : ${infos.hebergeur.contact}`,
-		],
-	},
-	{
-		titre: "4. Nature des projets présentés",
-		important: true,
-		corps: [
-			"La très grande majorité des projets présentés sur ce site ont été réalisés dans un cadre pédagogique (études en BUT MMI) ou en autoformation.",
-			"Ils poursuivent un but exclusivement éducatif et non lucratif : ils ne sont ni commercialisés, ni sponsorisés, et n'ont donné lieu à aucune transaction.",
-			"La plupart de ces projets ne correspondent pas à des commandes réelles. Les marques, événements, entreprises, personnes ou institutions qui y figurent sont, sauf mention contraire, fictifs ou utilisés uniquement à des fins d'exercice et de démonstration de compétences. Toute ressemblance avec une entité réelle serait fortuite ou relèverait d'un usage pédagogique.",
-			"Les noms, logos et marques de tiers éventuellement visibles restent la propriété de leurs détenteurs respectifs et sont montrés à titre illustratif, sans lien commercial.",
-		],
-	},
-	{
-		titre: "5. Propriété intellectuelle",
-		corps: [
-			"Sauf indication contraire, les textes, la mise en page, le code et les créations graphiques de ce site sont l'œuvre d'Alex Ringenbach.",
-			"Toute reproduction, représentation ou réutilisation, totale ou partielle, sans autorisation écrite préalable est interdite.",
-			"Les visuels de projets réalisés en groupe restent la propriété partagée de leurs auteurs.",
-		],
-	},
-	{
-		titre: "6. Données personnelles",
-		corps: [
-			"Le formulaire de contact collecte les données que vous y saisissez (nom, adresse e-mail, objet et message). Ces informations servent uniquement à traiter votre demande et à y répondre.",
-			"L'acheminement des messages est assuré par le service tiers FormSubmit (formsubmit.co), qui agit comme sous-traitant technique. Aucune donnée n'est revendue ni utilisée à des fins commerciales.",
-			"Les messages sont conservés le temps nécessaire au traitement de la demande, puis supprimés.",
-			`Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données : ${infos.email}.`,
-		],
-	},
-	{
-		titre: "7. Cookies et mesure d'audience",
-		corps: [
-			"Ce site ne dépose aucun cookie publicitaire et n'utilise aucun outil de suivi ou de mesure d'audience.",
-			"Seules les polices de caractères sont chargées depuis Google Fonts, ce qui implique une requête vers les serveurs de Google (adresse IP).",
-		],
-	},
-	{
-		titre: "8. Liens externes",
-		corps: [
-			"Ce site contient des liens vers des sites tiers (projets en ligne, réseaux sociaux, outils). L'éditeur n'exerce aucun contrôle sur ces ressources et décline toute responsabilité quant à leur contenu.",
-		],
-	},
-	{
-		titre: "9. Crédits",
-		corps: [
-			"Conception et développement : Alex Ringenbach.",
-			"Réalisé avec Astro et Tailwind CSS. Police d'affichage : Bevan (Google Fonts). Contenu dynamique servi via PocketBase.",
-		],
-	},
-];
 ---
 
 <Layout
@@ -102,32 +18,164 @@ const sections = [
 	jsonLd={jsonLd}
 >
 	<PageIntro eyebrow="Informations" title="Mentions légales" narrow seed={6}>
-		<p class="mt-6 text-lg text-white/70">
-			Dernière mise à jour : {infos.majDate}.
+		<p class="mt-6 text-lg text-white">
+			Dernière mise à jour : 28 août 2026.
 		</p>
 	</PageIntro>
 
 	<section class="bg-white pb-28 pt-16 text-ink">
 		<div class="grid-page">
 			<div class="col-prose">
-				{
-					sections.map((s) => (
-						<article
-							class:list={[
-								"mt-12 first:mt-0",
-								s.important &&
-									"rounded-3xl border border-crimson/30 bg-crimson/5 p-6 sm:p-8",
-							]}
-						>
-							<h2 class="font-display text-2xl sm:text-3xl">
-								{s.titre}
-							</h2>
-							{s.corps.map((p) => (
-								<p class="mt-4 leading-relaxed text-ink/75">{p}</p>
-							))}
-						</article>
-					))
-				}
+				<article class="mt-12 first:mt-0">
+					<h2 class="font-display text-2xl sm:text-3xl">
+						1. Éditeur du site
+					</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Le présent site est édité à titre personnel par Alex
+						Ringenbach (Étudiant en BUT MMI — site personnel non
+						professionnel), basé à Montbéliard, France.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Contact : alex.ringenbach0@gmail.com
+					</p>
+				</article>
+
+				<article class="mt-12 first:mt-0">
+					<h2 class="font-display text-2xl sm:text-3xl">
+						2. Directeur de la publication
+					</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">Alex Ringenbach.</p>
+				</article>
+
+				<article class="mt-12 first:mt-0">
+					<h2 class="font-display text-2xl sm:text-3xl">3. Hébergement</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Hébergeur : Infomaniak Network SA
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Adresse : Rue Eugène-Marziano 25, 1227 Les Acacias (Genève),
+						Suisse
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Contact : +41 22 820 35 44 — infomaniak.com
+					</p>
+				</article>
+
+				<article
+					class="mt-12 rounded-3xl border border-crimson/30 bg-crimson/5 p-6 first:mt-0 sm:p-8"
+				>
+					<h2 class="font-display text-2xl sm:text-3xl">
+						4. Nature des projets présentés
+					</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						La très grande majorité des projets présentés sur ce site ont
+						été réalisés dans un cadre pédagogique (études en BUT MMI) ou
+						en autoformation.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Ils poursuivent un but exclusivement éducatif et non lucratif :
+						ils ne sont ni commercialisés, ni sponsorisés, et n'ont donné
+						lieu à aucune transaction.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						La plupart de ces projets ne correspondent pas à des commandes
+						réelles. Les marques, événements, entreprises, personnes ou
+						institutions qui y figurent sont, sauf mention contraire,
+						fictifs ou utilisés uniquement à des fins d'exercice et de
+						démonstration de compétences. Toute ressemblance avec une
+						entité réelle serait fortuite ou relèverait d'un usage
+						pédagogique.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Les noms, logos et marques de tiers éventuellement visibles
+						restent la propriété de leurs détenteurs respectifs et sont
+						montrés à titre illustratif, sans lien commercial.
+					</p>
+				</article>
+
+				<article class="mt-12 first:mt-0">
+					<h2 class="font-display text-2xl sm:text-3xl">
+						5. Propriété intellectuelle
+					</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Sauf indication contraire, les textes, la mise en page, le code
+						et les créations graphiques de ce site sont l'œuvre d'Alex
+						Ringenbach.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Toute reproduction, représentation ou réutilisation, totale ou
+						partielle, sans autorisation écrite préalable est interdite.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Les visuels de projets réalisés en groupe restent la propriété
+						partagée de leurs auteurs.
+					</p>
+				</article>
+
+				<article class="mt-12 first:mt-0">
+					<h2 class="font-display text-2xl sm:text-3xl">
+						6. Données personnelles
+					</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Le formulaire de contact collecte les données que vous y
+						saisissez (nom, adresse e-mail, objet et message). Ces
+						informations servent uniquement à traiter votre demande et à y
+						répondre.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						L'acheminement des messages est assuré par le service tiers
+						FormSubmit (formsubmit.co), qui agit comme sous-traitant
+						technique. Aucune donnée n'est revendue ni utilisée à des fins
+						commerciales.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Les messages sont conservés le temps nécessaire au traitement
+						de la demande, puis supprimés.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Conformément au RGPD, vous disposez d'un droit d'accès, de
+						rectification et de suppression de vos données :
+						alex.ringenbach0@gmail.com.
+					</p>
+				</article>
+
+				<article class="mt-12 first:mt-0">
+					<h2 class="font-display text-2xl sm:text-3xl">
+						7. Cookies et mesure d'audience
+					</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Ce site ne dépose aucun cookie publicitaire et n'utilise aucun
+						outil de suivi ou de mesure d'audience.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Seules les polices de caractères sont chargées depuis Google
+						Fonts, ce qui implique une requête vers les serveurs de Google
+						(adresse IP).
+					</p>
+				</article>
+
+				<article class="mt-12 first:mt-0">
+					<h2 class="font-display text-2xl sm:text-3xl">
+						8. Liens externes
+					</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Ce site contient des liens vers des sites tiers (projets en
+						ligne, réseaux sociaux, outils). L'éditeur n'exerce aucun
+						contrôle sur ces ressources et décline toute responsabilité
+						quant à leur contenu.
+					</p>
+				</article>
+
+				<article class="mt-12 first:mt-0">
+					<h2 class="font-display text-2xl sm:text-3xl">9. Crédits</h2>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Conception et développement : Alex Ringenbach.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Réalisé avec Astro et Tailwind CSS. Police d'affichage : Bevan
+						(Google Fonts). Contenu dynamique servi via PocketBase.
+					</p>
+				</article>
 
 				<div class="mt-16">
 					<BackLink />

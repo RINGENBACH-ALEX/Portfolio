@@ -1,7 +1,6 @@
 ---
 import { Image } from "astro:assets";
 import { getImageUrl } from "../backend.mjs";
-import { hostname } from "../lib/url.js";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -14,85 +13,219 @@ interface Props {
 		type?: string;
 		[key: string]: unknown;
 	};
+	/** "cover" (défaut) = image en bandeau, texte dessous · "split" = image à gauche, contenu à droite (slider accueil) */
+	variant?: "cover" | "split";
+	/** taille du texte/padding pour la variante "split" — "lg" pour une carte plein écran (slider accueil) */
+	size?: "md" | "lg";
 	class?: string;
 }
 
 const TYPES: Record<string, string> = {
 	"site-web": "Site web",
 	maquette: "Maquette",
+	"Projet Personnel": "Projet perso",
 };
 
-const { projet: p, class: className = "" } = Astro.props;
+const {
+	projet: p,
+	variant = "cover",
+	size = "md",
+	class: className = "",
+} = Astro.props;
 const img = getImageUrl(p, "image");
 const typeLabel = p.type ? (TYPES[p.type] ?? p.type) : "";
 const href = p.id ? `/projet/${p.id}` : undefined;
-const host = hostname(p.lien);
+const host = p.lien ? new URL(p.lien).hostname.replace(/^www\./, "") : "";
+
+const isLg = size === "lg";
+const splitPad = isLg ? "p-6 sm:p-10 lg:p-12" : "p-5 sm:p-6";
+const splitImgW = isLg ? "w-[40%] sm:w-[46%] lg:w-[48%]" : "w-[38%] sm:w-[42%]";
+const splitEyebrow = isLg
+	? "text-xs tracking-[.25em]"
+	: "text-[10px] tracking-[.22em]";
+const splitTitle = isLg
+	? "mt-2 text-2xl leading-tight sm:mt-3 sm:text-4xl lg:text-5xl"
+	: "mt-1 text-xl leading-tight sm:text-2xl";
+const splitDesc = isLg
+	? "mt-3 line-clamp-3 text-sm leading-relaxed text-white sm:mt-4 sm:line-clamp-4 sm:text-base lg:text-lg"
+	: "mt-2 line-clamp-2 text-sm leading-relaxed text-white sm:line-clamp-3";
+const splitBtnPad = isLg ? "px-6 py-3.5 text-xs" : "px-4 py-2.5 text-[11px]";
 ---
 
-<article
-	class:list={[
-		"group flex flex-col overflow-hidden rounded-[2rem] border border-white/15 bg-ink/60 backdrop-blur-sm transition hover:border-crimson",
-		className,
-	]}
->
-	<a href={href} class="block" aria-label={p.titre}>
-		{
-			img ? (
-				<Image
-					src={img}
-					alt={p.titre ?? ""}
-					width={760}
-					height={428}
-					format="webp"
-					quality={68}
-					class="aspect-video w-full object-cover"
-					loading="lazy"
-				/>
-			) : (
-				<div class="aspect-video w-full border-b border-white/15 bg-[repeating-linear-gradient(135deg,#c50337_0_2px,transparent_2px_13px)]" />
-			)
-		}
-	</a>
+{
+	variant === "split" ? (
+		<article
+			class:list={[
+				"group relative flex overflow-hidden rounded-[2rem] border border-white/15 bg-ink/60 backdrop-blur-sm transition duration-500 hover:-translate-y-1.5 hover:border-crimson hover:shadow-[0_34px_70px_-32px_rgba(0,0,0,.75)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+				className,
+			]}
+		>
+			{/* liseré crimson qui se déploie au survol */}
+			<span
+				class="absolute inset-y-0 left-0 z-10 w-[3px] origin-top scale-y-0 bg-crimson transition-transform duration-500 group-hover:scale-y-100 motion-reduce:transition-none"
+				aria-hidden="true"
+			/>
 
-	<div class="flex flex-1 flex-col p-6 sm:p-8">
-		{
-			typeLabel && (
-				<p class="text-[11px] font-bold uppercase tracking-[.2em] text-crimson">
-					{typeLabel}
-				</p>
-			)
-		}
-		<h3 class="mt-2 font-display text-2xl sm:text-3xl">
-			<a href={href} class="transition group-hover:text-crimson">
-				{p.titre}
-			</a>
-		</h3>
-		<p class="mt-3 line-clamp-3 leading-relaxed text-white/70">
-			{p.description}
-		</p>
-
-		<div class="mt-6 flex flex-wrap items-center gap-4">
 			<a
 				href={href}
-				class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:text-crimson"
+				class:list={[
+					"relative block shrink-0 overflow-hidden",
+					splitImgW,
+				]}
+				aria-label={p.titre}
 			>
-				Détails
-				<Icon name="arrow-right" size={14} />
+				{img ? (
+					<Image
+						src={img}
+						alt={p.titre ?? ""}
+						width={isLg ? 700 : 400}
+						height={isLg ? 900 : 520}
+						format="webp"
+						quality={70}
+						class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+						loading="lazy"
+					/>
+				) : (
+					<div class="h-full w-full bg-[repeating-linear-gradient(135deg,#c50337_0_2px,transparent_2px_13px)]" />
+				)}
 			</a>
 
-			{
-				p.lien && (
+			<div
+				class:list={[
+					"flex min-w-0 flex-1 flex-col justify-between",
+					splitPad,
+				]}
+			>
+				<div class="min-w-0">
+					{typeLabel && (
+						<p
+							class:list={[
+								"font-bold uppercase text-white",
+								splitEyebrow,
+							]}
+						>
+							{typeLabel}
+						</p>
+					)}
+					<h3 class:list={["font-display", splitTitle]}>
+						<a href={href} class="transition group-hover:text-crimson">
+							{p.titre}
+						</a>
+					</h3>
+					<p class:list={[splitDesc]}>{p.description}</p>
+				</div>
+
+				<div class="mt-4 flex items-center justify-between gap-4 sm:mt-6">
+					{p.lien && (
+						<a
+							href={p.lien}
+							target="_blank"
+							rel="noreferrer"
+							class="inline-flex min-w-0 items-center gap-1.5 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:text-crimson"
+						>
+							<span class="truncate">{host || "Voir en ligne"}</span>
+							<Icon name="external" size={13} class="shrink-0" />
+						</a>
+					)}
 					<a
-						href={p.lien}
-						target="_blank"
-						rel="noreferrer"
-						class="inline-flex min-w-0 items-center gap-1.5 text-xs font-bold uppercase tracking-[.18em] text-crimson transition hover:text-white"
+						href={href}
+						class:list={[
+							"group/link ml-auto inline-flex shrink-0 items-center gap-2 rounded-full bg-crimson font-bold uppercase tracking-[.18em] text-white transition hover:bg-white hover:text-crimson",
+							splitBtnPad,
+						]}
 					>
-						<span class="truncate">{host || "Voir en ligne"}</span>
-						<Icon name="external" size={13} class="shrink-0" />
+						Détails
+						<Icon
+							name="arrow-right"
+							size={13}
+							class="transition-transform duration-300 group-hover/link:translate-x-1 motion-reduce:transition-none"
+						/>
 					</a>
-				)
-			}
-		</div>
-	</div>
-</article>
+				</div>
+			</div>
+		</article>
+	) : (
+		<article
+			class:list={[
+				"group relative flex flex-col overflow-hidden rounded-[2rem] border border-white/15 bg-ink/60 backdrop-blur-sm transition duration-500 hover:-translate-y-1.5 hover:border-crimson hover:shadow-[0_34px_70px_-32px_rgba(0,0,0,.75)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+				className,
+			]}
+		>
+			{/* liseré crimson qui se déploie au survol */}
+			<span
+				class="absolute inset-x-0 top-0 z-10 h-[3px] origin-left scale-x-0 bg-crimson transition-transform duration-500 group-hover:scale-x-100 motion-reduce:transition-none"
+				aria-hidden="true"
+			/>
+
+			<a
+				href={href}
+				class="relative block aspect-video overflow-hidden"
+				aria-label={p.titre}
+			>
+				{img ? (
+					<Image
+						src={img}
+						alt={p.titre ?? ""}
+						width={760}
+						height={428}
+						format="webp"
+						quality={68}
+						class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+						loading="lazy"
+					/>
+				) : (
+					<div class="h-full w-full bg-[repeating-linear-gradient(135deg,#c50337_0_2px,transparent_2px_13px)]" />
+				)}
+
+				{/* voile bas pour asseoir la pastille et la lisibilité */}
+				<span
+					class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/75 via-ink/10 to-transparent"
+					aria-hidden="true"
+				/>
+
+				{typeLabel && (
+					<span class="absolute left-4 top-4 rounded-full border border-white/25 bg-ink/45 px-3 py-1 text-[10px] font-bold uppercase tracking-[.22em] text-white backdrop-blur-md">
+						{typeLabel}
+					</span>
+				)}
+			</a>
+
+			<div class="flex flex-1 flex-col p-6 sm:p-8">
+				<h3 class="font-display text-2xl sm:text-3xl">
+					<a href={href} class="transition group-hover:text-crimson">
+						{p.titre}
+					</a>
+				</h3>
+				<p class="mt-3 line-clamp-3 leading-relaxed text-white">
+					{p.description}
+				</p>
+
+				<div class="mt-6 flex flex-wrap items-center gap-4">
+					<a
+						href={href}
+						class="group/link inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:text-crimson"
+					>
+						Détails
+						<Icon
+							name="arrow-right"
+							size={14}
+							class="transition-transform duration-300 group-hover/link:translate-x-1 motion-reduce:transition-none"
+						/>
+					</a>
+
+					{p.lien && (
+						<a
+							href={p.lien}
+							target="_blank"
+							rel="noreferrer"
+							class="inline-flex min-w-0 items-center gap-1.5 text-xs font-bold uppercase tracking-[.18em] text-white transition hover:text-crimson"
+						>
+							<span class="truncate">{host || "Voir en ligne"}</span>
+							<Icon name="external" size={13} class="shrink-0" />
+						</a>
+					)}
+				</div>
+			</div>
+		</article>
+	)
+}

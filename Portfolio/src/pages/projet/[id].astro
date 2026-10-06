@@ -5,8 +5,13 @@ import Layout from "../../layouts/Layout.astro";
 import Waves from "../../components/Waves.astro";
 import BackLink from "../../components/BackLink.astro";
 import Icon from "../../components/Icon.astro";
-import { allProjets, getFileUrl } from "../../backend.mjs";
-import { hostname } from "../../lib/url.js";
+import {
+	allProjets,
+	getFileUrl,
+	getImageUrl,
+	competencesOfProjet,
+	processusOfProjet,
+} from "../../backend.mjs";
 import { breadcrumbNode, abs, excerpt } from "../../lib/seo.js";
 
 export async function getStaticPaths() {
@@ -25,11 +30,14 @@ export async function getStaticPaths() {
 const TYPES: Record<string, string> = {
 	"site-web": "Site web",
 	maquette: "Maquette",
+	"Projet Personnel": "Projet perso",
 };
 
 const { projet: p } = Astro.props;
 const typeLabel = p.type ? (TYPES[p.type] ?? p.type) : "";
-const host = hostname(p.lien);
+const host = p.lien ? new URL(p.lien).hostname.replace(/^www\./, "") : "";
+const competences = competencesOfProjet(p);
+const processus = processusOfProjet(p);
 
 const fichiers: string[] = Array.isArray(p.image)
 	? p.image
@@ -38,7 +46,7 @@ const fichiers: string[] = Array.isArray(p.image)
 		: [];
 
 // dimensions réelles (pour redimensionner sans déformer) — 1 seul fetch au build
-const MAX_W = 900;
+const MAX_W = 1200;
 const images = (
 	await Promise.all(
 		fichiers.map(async (f) => {
@@ -57,15 +65,23 @@ const images = (
 	)
 ).filter((x): x is { url: string; w: number; h: number } => x !== null);
 
+const cover = images[0] ?? null;
+const gallery = images.slice(1);
+
 // version optimisée (locale) de la 1re image -> partage social
-const ogImg = images[0]
+const ogImg = cover
 	? await getImage({
-			src: images[0].url,
+			src: cover.url,
 			width: 1200,
 			height: 630,
 			format: "webp",
 		})
 	: null;
+
+// méta affichées sous le titre
+const meta = [typeLabel && { k: "Type", v: typeLabel }].filter(
+	Boolean,
+) as { k: string; v: string }[];
 
 const jsonLd = [
 	breadcrumbNode([
@@ -80,6 +96,9 @@ const jsonLd = [
 		url: abs(`/projet/${p.id}`),
 		...(p.lien ? { sameAs: p.lien } : {}),
 		...(ogImg ? { image: abs(ogImg.src) } : {}),
+		...(competences.length
+			? { keywords: competences.map((c: any) => c.nom).join(", ") }
+			: {}),
 		genre: typeLabel || undefined,
 		author: { "@id": "https://alex-ringenbach.fr/#person" },
 		creator: { "@id": "https://alex-ringenbach.fr/#person" },
@@ -95,7 +114,8 @@ const jsonLd = [
 	image={ogImg?.src}
 	jsonLd={jsonLd}
 >
-	<section class="relative overflow-hidden pb-20 pt-40">
+	<!-- Intro -->
+	<section class="relative overflow-hidden pb-16 pt-40">
 		<div
 			class="pointer-events-none absolute -right-40 -top-24 h-[38rem] w-[38rem] rounded-full bg-crimson opacity-25 blur-[130px]"
 		>
@@ -108,7 +128,7 @@ const jsonLd = [
 
 				{
 					typeLabel && (
-						<p class="mt-8 text-xs font-bold uppercase tracking-[.3em] text-crimson">
+						<p class="mt-8 text-xs font-bold uppercase tracking-[.3em] text-white">
 							{typeLabel}
 						</p>
 					)
@@ -116,7 +136,7 @@ const jsonLd = [
 				<h1 class="mt-4 font-display text-4xl leading-[.95] sm:text-6xl">
 					{p.titre}
 				</h1>
-				<p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
+				<p class="mt-6 max-w-2xl text-lg leading-relaxed text-white">
 					{p.description}
 				</p>
 
@@ -139,41 +159,162 @@ const jsonLd = [
 					)
 				}
 			</div>
+
+			{
+				meta.length > 0 && (
+					<dl class="col-full mt-14 grid grid-cols-2 gap-6 border-t border-white/12 pt-8 sm:grid-cols-4">
+						{meta.map((m) => (
+							<div>
+								<dt class="text-[11px] font-bold uppercase tracking-[.22em] text-white">
+									{m.k}
+								</dt>
+								<dd class="mt-2 text-sm text-white">{m.v}</dd>
+							</div>
+						))}
+					</dl>
+				)
+			}
 		</div>
 	</section>
 
-	{
-		images.length > 0 && (
-			<section class="bg-white pb-28 pt-16">
-				<div class="grid-page">
+	<!-- Détail éditorial -->
+	<section class="bg-white pb-28 pt-20 text-ink">
+		<div class="grid-page gap-x-6 gap-y-16">
+			{
+				(p.description || competences.length > 0) && (
+					<div class="col-full lg:col-span-6">
+						{p.description && (
+							<>
+								<h2 class="font-display text-3xl sm:text-4xl">Contexte</h2>
+								<p class="mt-6 leading-relaxed text-ink/75">
+									{p.description}
+								</p>
+							</>
+						)}
+
+						{competences.length > 0 && (
+							<div class:list={[p.description && "mt-12"]}>
+								<h2 class="font-display text-2xl sm:text-3xl">
+									Compétences utilisées
+								</h2>
+								<ul class="mt-6 flex flex-wrap gap-3">
+									{competences.map((c: any) => {
+										const logo = getImageUrl(c, "Logo");
+										return (
+											<li class="flex max-w-full items-center gap-3 rounded-full border border-ink/15 py-2 pl-2 pr-5 transition hover:border-crimson">
+												{logo && (
+													<Image
+														src={logo}
+														alt=""
+														width={80}
+														height={80}
+														format="webp"
+														quality={80}
+														class="h-10 w-10 shrink-0 rounded-xl bg-ink/3 object-contain p-1.5"
+														loading="lazy"
+													/>
+												)}
+												<span class="truncate text-sm font-bold">
+													{c.nom}
+												</span>
+											</li>
+										);
+									})}
+								</ul>
+							</div>
+						)}
+					</div>
+				)
+			}
+
+			{
+				cover && (
+					<a
+						href={cover.url}
+						target="_blank"
+						rel="noreferrer"
+						class="col-full flex items-start justify-center overflow-hidden rounded-3xl border border-ink/10 bg-ink/2 p-3 transition hover:border-crimson sm:p-5 lg:col-span-5 lg:col-start-8"
+					>
+						<Image
+							src={cover.url}
+							alt={`${p.titre} — visuel principal`}
+							width={cover.w}
+							height={cover.h}
+							format="webp"
+							quality={70}
+							class="max-h-128 w-auto max-w-full rounded-xl object-contain"
+							loading="eager"
+						/>
+					</a>
+				)
+			}
+
+			{
+				processus.length > 0 && (
+					<div class="col-full lg:col-span-10">
+						<h2 class="font-display text-3xl sm:text-4xl">Processus</h2>
+						<ol class="mt-10 grid gap-6 md:grid-cols-2">
+							{processus.map((step: { titre: string; html: string }, i: number) => (
+								<li class="rounded-3xl border border-ink/10 bg-ink/2 p-6">
+									<span class="font-display text-2xl text-crimson">
+										{String(i + 1).padStart(2, "0")}
+									</span>
+									<h3 class="mt-3 font-display text-xl">
+										{step.titre}
+									</h3>
+									<div
+										class="processus-texte mt-2 leading-relaxed text-ink/70"
+										set:html={step.html}
+									/>
+								</li>
+							))}
+						</ol>
+					</div>
+				)
+			}
+
+			{
+				gallery.length > 0 && (
 					<div class="col-full">
-						<p class="text-xs font-bold uppercase tracking-[.3em] text-crimson">
-							Aperçu
-						</p>
-						<div class="mt-8 grid grid-cols-2 items-start gap-6 lg:grid-cols-3">
-							{images.map((im, i) => (
+						<h2 class="font-display text-3xl sm:text-4xl">Aperçu</h2>
+						<div class="mt-8 grid grid-cols-2 gap-6 lg:grid-cols-3">
+							{gallery.map((im, i) => (
 								<a
 									href={im.url}
 									target="_blank"
 									rel="noreferrer"
-									class="block overflow-hidden rounded-2xl border border-ink/10 transition hover:border-crimson"
+									class="flex h-64 items-center justify-center overflow-hidden rounded-2xl border border-ink/10 bg-ink/2 p-2 transition hover:border-crimson sm:h-80"
 								>
 									<Image
 										src={im.url}
-										alt={`${p.titre} — aperçu ${i + 1}`}
+										alt={`${p.titre} — aperçu ${i + 2}`}
 										width={im.w}
 										height={im.h}
 										format="webp"
 										quality={68}
-										class="w-full"
+										class="max-h-full w-auto max-w-full object-contain"
 										loading="lazy"
 									/>
 								</a>
 							))}
 						</div>
 					</div>
-				</div>
-			</section>
-		)
-	}
+				)
+			}
+
+			<div class="col-full">
+				<BackLink href="/projets" label="Toutes les réalisations" />
+			</div>
+		</div>
+	</section>
 </Layout>
+
+<style>
+	/* contenu HTML de l'éditeur PocketBase : espace entre les paragraphes */
+	.processus-texte :global(p + p) {
+		margin-top: 0.75rem;
+	}
+	.processus-texte :global(strong) {
+		color: var(--color-ink);
+	}
+</style>

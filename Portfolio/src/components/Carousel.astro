@@ -14,12 +14,15 @@ const { moreHref, moreLabel, label, tone = "dark" } = Astro.props;
 
 const arrow =
 	tone === "light"
-		? "border-white/30 hover:border-white hover:text-white"
-		: "border-ink/20 hover:border-crimson hover:text-crimson";
+		? "border-white/30 hover:border-white hover:bg-white hover:text-crimson"
+		: "border-ink/20 hover:border-crimson hover:bg-crimson hover:text-white";
 const more =
 	tone === "light"
 		? "bg-white text-crimson hover:bg-ink hover:text-white"
 		: "bg-crimson text-white hover:bg-ink";
+const controls = tone === "light" ? "text-white" : "text-ink";
+const railBg = tone === "light" ? "bg-white/20" : "bg-ink/10";
+const railFill = tone === "light" ? "bg-white" : "bg-crimson";
 ---
 
 <div
@@ -30,21 +33,21 @@ const more =
 	aria-label={label}
 >
 	<ul
-		class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2"
+		class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth -mt-3 -mb-10 pt-3 pb-12"
 		data-track
 		tabindex="0"
-		aria-label={`${label} — faire défiler`}
+		aria-label={`${label} — faire défiler (flèches du clavier)`}
 	>
 		<slot />
 	</ul>
 
-	<div class="mt-8 flex items-center gap-3">
+	<div class:list={["mt-8 flex items-center gap-4", controls]}>
 		<button
 			type="button"
 			data-prev
 			aria-label={`${label} précédents`}
 			class:list={[
-				"grid h-11 w-11 place-items-center rounded-full border transition",
+				"grid h-11 w-11 shrink-0 place-items-center rounded-full border transition duration-300 active:scale-90",
 				arrow,
 			]}
 		>
@@ -55,17 +58,38 @@ const more =
 			data-next
 			aria-label={`${label} suivants`}
 			class:list={[
-				"grid h-11 w-11 place-items-center rounded-full border transition",
+				"grid h-11 w-11 shrink-0 place-items-center rounded-full border transition duration-300 active:scale-90",
 				arrow,
 			]}
 		>
 			<Icon name="chevron-right" size={18} />
 		</button>
+
+		<div
+			class:list={[
+				"relative hidden h-0.5 flex-1 overflow-hidden rounded-full sm:block",
+				railBg,
+			]}
+			aria-hidden="true"
+		>
+			<span
+				data-progress-bar
+				class:list={[
+					"absolute inset-0 origin-left scale-x-0 rounded-full transition-transform duration-200 ease-out",
+					railFill,
+				]}></span>
+		</div>
+
+		<span
+			data-count
+			class="shrink-0 text-[11px] font-bold uppercase tracking-[.2em] tabular-nums"
+			aria-hidden="true"></span>
+
 		<a
 			href={moreHref}
 			data-more
 			class:list={[
-				"ml-1 hidden items-center gap-2 rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[.18em] transition",
+				"ml-1 hidden shrink-0 items-center gap-2 rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[.18em] transition",
 				more,
 			]}
 		>
@@ -74,6 +98,46 @@ const more =
 		</a>
 	</div>
 </div>
+
+<style>
+	/* dégradé de bord : les cartes se fondent au lieu d'être coupées net.
+	   --fade-* est piloté par le JS (0 aux extrémités) -> aucun rognage si le JS échoue. */
+	.carousel [data-track] {
+		-webkit-mask-image: linear-gradient(
+			90deg,
+			#0000,
+			#000 var(--fade-l, 0px),
+			#000 calc(100% - var(--fade-r, 0px)),
+			#0000
+		);
+		mask-image: linear-gradient(
+			90deg,
+			#0000,
+			#000 var(--fade-l, 0px),
+			#000 calc(100% - var(--fade-r, 0px)),
+			#0000
+		);
+	}
+
+	@media (pointer: fine) {
+		.carousel [data-track] {
+			cursor: grab;
+		}
+		.carousel [data-track].is-dragging {
+			cursor: grabbing;
+			scroll-behavior: auto;
+		}
+		.carousel [data-track].is-dragging * {
+			pointer-events: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.carousel [data-track] {
+			scroll-behavior: auto;
+		}
+	}
+</style>
 
 <script>
 	import "../scripts/carousel.js";

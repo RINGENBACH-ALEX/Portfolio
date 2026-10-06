@@ -17,5 +17,8 @@
     "astro": "^6.4.2",
     "pocketbase": "^0.28.0",
     "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "daisyui": "^5.7.28"
   }
 }
