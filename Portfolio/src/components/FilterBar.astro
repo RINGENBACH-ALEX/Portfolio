@@ -1,10 +1,9 @@
 ---
 /**
- * Barre de filtres collante (segments « Tous » + une valeur par catégorie).
+ * Barre de filtres (segments « Tous » + une valeur par catégorie).
  * Filtre les éléments de la page marqués `data-filtre-item="<valeur>"` ;
  * `data-count` (facultatif) = nombre de cartes que contient l'élément,
  * pour l'annonce aux lecteurs d'écran. Le filtre actif est gardé dans l'URL.
- * ⚠️ Un parent en overflow-hidden casse le sticky : utiliser overflow-clip.
  */
 interface Props {
 	filtres: { value: string; label: string; count: number }[];
@@ -35,7 +34,7 @@ const badge =
 ---
 
 <div
-	class="sticky top-4 z-20"
+	class="relative z-20"
 	data-filtres
 	data-param={param}
 	data-statut={statut.join("|")}

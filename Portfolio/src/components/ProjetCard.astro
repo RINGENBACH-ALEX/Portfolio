@@ -9,6 +9,7 @@ interface Props {
 		titre?: string;
 		description?: string;
 		lien?: string;
+		affiche?: string;
 		image?: string | string[];
 		type?: string;
 		[key: string]: unknown;
@@ -32,7 +33,8 @@ const {
 	size = "md",
 	class: className = "",
 } = Astro.props;
-const img = getImageUrl(p, "image");
+// cover de la carte : "affiche", avec repli sur la 1re "image"
+const img = getImageUrl(p, "affiche") ?? getImageUrl(p, "image");
 const typeLabel = p.type ? (TYPES[p.type] ?? p.type) : "";
 const href = p.id ? `/projet/${p.id}` : undefined;
 const host = p.lien ? new URL(p.lien).hostname.replace(/^www\./, "") : "";
@@ -75,16 +77,31 @@ const splitBtnPad = isLg ? "px-6 py-3.5 text-xs" : "px-4 py-2.5 text-[11px]";
 				aria-label={p.titre}
 			>
 				{img ? (
-					<Image
-						src={img}
-						alt={p.titre ?? ""}
-						width={isLg ? 700 : 400}
-						height={isLg ? 900 : 520}
-						format="webp"
-						quality={70}
-						class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-						loading="lazy"
-					/>
+					<>
+						{/* fond : la même image floutée, pour combler les bandes autour de l'affiche entière */}
+						<Image
+							src={img}
+							alt=""
+							aria-hidden="true"
+							width={64}
+							height={64}
+							format="webp"
+							quality={40}
+							class="absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+							loading="lazy"
+						/>
+						<Image
+							src={img}
+							alt={p.titre ?? ""}
+							fit="contain"
+							width={isLg ? 700 : 400}
+							height={isLg ? 900 : 520}
+							format="webp"
+							quality={70}
+							class="relative h-full w-full object-contain transition-transform duration-[900ms] ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+							loading="lazy"
+						/>
+					</>
 				) : (
 					<div class="h-full w-full bg-[repeating-linear-gradient(135deg,#c50337_0_2px,transparent_2px_13px)]" />
 				)}
@@ -163,25 +180,34 @@ const splitBtnPad = isLg ? "px-6 py-3.5 text-xs" : "px-4 py-2.5 text-[11px]";
 				aria-label={p.titre}
 			>
 				{img ? (
-					<Image
-						src={img}
-						alt={p.titre ?? ""}
-						width={760}
-						height={428}
-						format="webp"
-						quality={68}
-						class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-						loading="lazy"
-					/>
+					<>
+						{/* fond : la même image floutée, pour combler les bandes autour de l'affiche entière */}
+						<Image
+							src={img}
+							alt=""
+							aria-hidden="true"
+							width={64}
+							height={36}
+							format="webp"
+							quality={40}
+							class="absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+							loading="lazy"
+						/>
+						<Image
+							src={img}
+							alt={p.titre ?? ""}
+							fit="contain"
+							width={760}
+							height={428}
+							format="webp"
+							quality={68}
+							class="relative h-full w-full object-contain transition-transform duration-[900ms] ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+							loading="lazy"
+						/>
+					</>
 				) : (
 					<div class="h-full w-full bg-[repeating-linear-gradient(135deg,#c50337_0_2px,transparent_2px_13px)]" />
 				)}
-
-				{/* voile bas pour asseoir la pastille et la lisibilité */}
-				<span
-					class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/75 via-ink/10 to-transparent"
-					aria-hidden="true"
-				/>
 
 				{typeLabel && (
 					<span class="absolute left-4 top-4 rounded-full border border-white/25 bg-ink/45 px-3 py-1 text-[10px] font-bold uppercase tracking-[.22em] text-white backdrop-blur-md">
