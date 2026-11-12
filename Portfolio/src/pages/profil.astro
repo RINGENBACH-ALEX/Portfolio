@@ -39,7 +39,8 @@ const jsonLd = [
 				src={portrait}
 				alt="Portrait d'Alex Ringenbach"
 				width={420}
-				densities={[1, 2]}
+				widths={[320, 420, 640, 840]}
+				sizes="(min-width: 64rem) 30vw, (min-width: 48rem) 35vw, (min-width: 40rem) 24rem, 20rem"
 				format="webp"
 				quality={58}
 				loading="eager"
@@ -62,7 +63,7 @@ const jsonLd = [
 
 			<div class="mt-8 space-y-4 text-lg leading-relaxed text-white">
 				<p>
-					Je suis étudiant en BUT MMI à Montbeliard, spécialisé en
+					Je suis étudiant en BUT MMI à Montbéliard, spécialisé en
 					design graphique. J'aime le moment où une intention un peu
 					floue devient une forme nette : un logo, une grille, une
 					affiche, une interface.

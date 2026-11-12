@@ -19,7 +19,7 @@ const jsonLd = [
 >
 	<PageIntro eyebrow="Informations" title="Mentions légales" narrow seed={6}>
 		<p class="mt-6 text-lg text-white">
-			Dernière mise à jour : 28 août 2026.
+			Dernière mise à jour : 12 novembre 2026.
 		</p>
 	</PageIntro>
 
@@ -112,7 +112,7 @@ const jsonLd = [
 					</p>
 				</article>
 
-				<article class="mt-12 first:mt-0">
+				<article id="donnees" class="mt-12 first:mt-0">
 					<h2 class="font-display text-2xl sm:text-3xl">
 						6. Données personnelles
 					</h2>
@@ -125,17 +125,21 @@ const jsonLd = [
 					<p class="mt-4 leading-relaxed text-ink/75">
 						L'acheminement des messages est assuré par le service tiers
 						FormSubmit (formsubmit.co), qui agit comme sous-traitant
-						technique. Aucune donnée n'est revendue ni utilisée à des fins
+						technique ; ce service étant opéré hors de l'Union européenne,
+						vos données peuvent transiter par des serveurs situés hors UE.
+						Aucune donnée n'est revendue ni utilisée à des fins
 						commerciales.
 					</p>
 					<p class="mt-4 leading-relaxed text-ink/75">
-						Les messages sont conservés le temps nécessaire au traitement
-						de la demande, puis supprimés.
+						Les messages reçus sont conservés dans la boîte e-mail de
+						l'éditeur au plus un an après le dernier échange, puis
+						supprimés.
 					</p>
 					<p class="mt-4 leading-relaxed text-ink/75">
 						Conformément au RGPD, vous disposez d'un droit d'accès, de
 						rectification et de suppression de vos données :
-						alex.ringenbach0@gmail.com.
+						alex.ringenbach0@gmail.com. Vous pouvez également adresser une
+						réclamation à la CNIL (cnil.fr).
 					</p>
 				</article>
 
@@ -148,9 +152,10 @@ const jsonLd = [
 						outil de suivi ou de mesure d'audience.
 					</p>
 					<p class="mt-4 leading-relaxed text-ink/75">
-						Seules les polices de caractères sont chargées depuis Google
-						Fonts, ce qui implique une requête vers les serveurs de Google
-						(adresse IP).
+						Toutes les ressources (polices, images, scripts) sont servies
+						depuis ce site : aucune requête n'est envoyée à un service
+						tiers lors de la navigation. Seul l'envoi du formulaire de
+						contact contacte FormSubmit.
 					</p>
 				</article>
 
@@ -172,8 +177,17 @@ const jsonLd = [
 						Conception et développement : Alex Ringenbach.
 					</p>
 					<p class="mt-4 leading-relaxed text-ink/75">
-						Réalisé avec Astro et Tailwind CSS. Police d'affichage : Bevan
-						(Google Fonts). Contenu dynamique servi via PocketBase.
+						Réalisé avec Astro et Tailwind CSS. Contenu géré avec
+						PocketBase et intégré au site lors de la génération.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Police d'affichage : Bevan, de Vernon Adams, distribuée sous
+						licence SIL Open Font License 1.1 et hébergée sur ce site.
+					</p>
+					<p class="mt-4 leading-relaxed text-ink/75">
+						Des outils d'intelligence artificielle ont servi d'assistance
+						au développement du code ; leur usage est détaillé dans le
+						fichier IA.md du dépôt du projet.
 					</p>
 				</article>
 

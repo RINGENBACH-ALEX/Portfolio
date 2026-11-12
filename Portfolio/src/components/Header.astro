@@ -46,7 +46,7 @@ const isCurrent = (href: string) =>
 					<a
 						href={l.href}
 						aria-current={isCurrent(l.href) ? "page" : undefined}
-						class="transition hover:text-crimson aria-[current=page]:text-crimson"
+						class="transition hover:text-crimson aria-[current=page]:underline aria-[current=page]:decoration-crimson aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
 					>
 						{l.label}
 					</a>

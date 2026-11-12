@@ -79,11 +79,13 @@ const jsonLd = [
 					)
 				}
 
+				{/* h2 lu par les lecteurs d'écran : les titres de cartes sont des h3 */}
+				<h2 class="sr-only">Liste des projets</h2>
 				<ul role="list" class="mt-10 grid gap-6 md:grid-cols-2">
 					{
-						projets.map((p) => (
+						projets.map((p, i) => (
 							<li data-filtre-item={p.type || "Autres"}>
-								<ProjetCard projet={p} class="h-full" />
+								<ProjetCard projet={p} class="h-full" eager={i < 2} />
 							</li>
 						))
 					}

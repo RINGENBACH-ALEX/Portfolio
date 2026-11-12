@@ -43,7 +43,7 @@ const logo = getImageUrl(c, "Logo");
 	}
 	<div class="p-5">
 		<p class="font-display text-xl">{c.nom}</p>
-		<span class="mt-3 flex gap-1">
+		<span class="mt-3 flex gap-1" data-lvl>
 			{
 				[0, 1, 2, 3].map((i) => (
 					<span
@@ -64,38 +64,53 @@ const logo = getImageUrl(c, "Logo");
 </div>
 
 <style>
-	/* les jauges se remplissent en entrant dans le viewport, avec un léger décalage.
-	   Uniquement si le scroll-driven animation est supporté -> sinon état final direct. */
+	/* Les jauges se remplissent UNE fois, quand la carte entre dans l'écran.
+	   Avant : une animation liée au scroll (animation-timeline: view()) par
+	   jauge, soit ~76 timelines recalculées à chaque image -> 7,7 s de travail
+	   du thread principal mesurées par Lighthouse sur /competences.
+	   Ici : une simple transition déclenchée par IntersectionObserver.
+	   Sans JS (classe .js-lvl jamais posée) -> jauges pleines directement. */
 	@media (prefers-reduced-motion: no-preference) {
-		@supports (animation-timeline: view()) {
-			.lvl-bar {
-				transform-origin: left;
-				animation: lvl-grow linear both;
-				animation-timeline: view();
-			}
-			.lvl-bar:nth-child(1) {
-				animation-range: entry 6% cover 14%;
-			}
-			.lvl-bar:nth-child(2) {
-				animation-range: entry 9% cover 17%;
-			}
-			.lvl-bar:nth-child(3) {
-				animation-range: entry 12% cover 20%;
-			}
-			.lvl-bar:nth-child(4) {
-				animation-range: entry 15% cover 23%;
-			}
-		}
-	}
-
-	@keyframes lvl-grow {
-		from {
+		.js-lvl .lvl-bar {
 			transform: scaleX(0);
+			transform-origin: left;
 			opacity: 0;
+			transition:
+				transform 0.5s ease-out,
+				opacity 0.5s ease-out;
 		}
-		to {
-			transform: scaleX(1);
+		.js-lvl .lvl-bar:nth-child(2) {
+			transition-delay: 0.08s;
+		}
+		.js-lvl .lvl-bar:nth-child(3) {
+			transition-delay: 0.16s;
+		}
+		.js-lvl .lvl-bar:nth-child(4) {
+			transition-delay: 0.24s;
+		}
+		.js-lvl.is-visible .lvl-bar {
+			transform: none;
 			opacity: 1;
 		}
 	}
 </style>
+
+<script>
+	const jauges = document.querySelectorAll<HTMLElement>("[data-lvl]");
+	if ("IntersectionObserver" in window) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				for (const e of entries) {
+					if (!e.isIntersecting) continue;
+					e.target.classList.add("is-visible");
+					io.unobserve(e.target); // une seule fois, puis plus aucun coût
+				}
+			},
+			{ rootMargin: "0px 0px -10% 0px" },
+		);
+		for (const j of jauges) {
+			j.classList.add("js-lvl");
+			io.observe(j);
+		}
+	}
+</script>

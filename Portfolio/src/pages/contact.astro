@@ -100,6 +100,17 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 					Envoyer
 				</button>
 
+				<p class="mt-4 text-xs leading-relaxed text-white">
+					Vos nom, e-mail et message servent uniquement à vous répondre.
+					Ils transitent par le service FormSubmit et ne sont ni revendus
+					ni réutilisés.
+					<a
+						href="/mentions-legales#donnees"
+						class="underline decoration-crimson underline-offset-2"
+						>Données personnelles et droits</a
+					>.
+				</p>
+
 				<p
 					id="form-status"
 					class="mt-4 hidden text-sm"
@@ -145,19 +156,19 @@ const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
 			if (res.ok) {
 				form.reset();
 				setStatus(
-					"Message envoyé, merci ! Je te réponds très vite.",
+					"Message envoyé, merci ! Je vous réponds très vite.",
 					true,
 				);
 			} else {
 				setStatus(
 					json?.message ||
-						"Envoi impossible pour le moment. Réessaie ou écris-moi par email.",
+						"Envoi impossible pour le moment. Réessayez ou écrivez-moi par e-mail.",
 					false,
 				);
 			}
 		} catch {
 			setStatus(
-				"Erreur réseau. Réessaie ou écris-moi directement par email.",
+				"Erreur réseau. Réessayez ou écrivez-moi directement par e-mail.",
 				false,
 			);
 		} finally {

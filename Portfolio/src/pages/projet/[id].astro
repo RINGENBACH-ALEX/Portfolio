@@ -65,13 +65,29 @@ const images = (
 	)
 ).filter((x): x is { url: string; w: number; h: number } => x !== null);
 
-const cover = images[0] ?? null;
-const gallery = images.slice(1);
+// Versions webp générées au build : ce sont elles qu'on affiche ET qu'on ouvre
+// au clic. Avant, les liens pointaient vers l'URL brute PocketBase
+// (http://127.0.0.1:8090/…) -> liens morts une fois le site en ligne.
+const optimises = await Promise.all(
+	images.map(async (im, i) => {
+		const out = await getImage({
+			src: im.url,
+			width: im.w,
+			height: im.h,
+			format: "webp",
+			quality: i === 0 ? 70 : 68,
+		});
+		return { src: out.src, w: im.w, h: im.h };
+	}),
+);
+
+const cover = optimises[0] ?? null;
+const gallery = optimises.slice(1);
 
 // version optimisée (locale) de la 1re image -> partage social
-const ogImg = cover
+const ogImg = images[0]
 	? await getImage({
-			src: cover.url,
+			src: images[0].url,
 			width: 1200,
 			height: 630,
 			format: "webp",
@@ -155,6 +171,7 @@ const jsonLd = [
 									{host}
 								</span>
 							)}
+							<span class="sr-only">(nouvel onglet)</span>
 						</a>
 					)
 				}
@@ -230,21 +247,21 @@ const jsonLd = [
 			{
 				cover && (
 					<a
-						href={cover.url}
+						href={cover.src}
 						target="_blank"
 						rel="noreferrer"
 						class="col-full flex items-start justify-center overflow-hidden rounded-3xl border border-ink/10 bg-ink/2 p-3 transition hover:border-crimson sm:p-5 lg:col-span-5 lg:col-start-8"
 					>
-						<Image
-							src={cover.url}
+						<img
+							src={cover.src}
 							alt={`${p.titre} — visuel principal`}
 							width={cover.w}
 							height={cover.h}
-							format="webp"
-							quality={70}
 							class="max-h-128 w-auto max-w-full rounded-xl object-contain"
 							loading="eager"
+							decoding="async"
 						/>
+						<span class="sr-only">(agrandir dans un nouvel onglet)</span>
 					</a>
 				)
 			}
@@ -280,21 +297,21 @@ const jsonLd = [
 						<div class="mt-8 grid grid-cols-2 gap-6 lg:grid-cols-3">
 							{gallery.map((im, i) => (
 								<a
-									href={im.url}
+									href={im.src}
 									target="_blank"
 									rel="noreferrer"
 									class="flex h-64 items-center justify-center overflow-hidden rounded-2xl border border-ink/10 bg-ink/2 p-2 transition hover:border-crimson sm:h-80"
 								>
-									<Image
-										src={im.url}
+									<img
+										src={im.src}
 										alt={`${p.titre} — aperçu ${i + 2}`}
 										width={im.w}
 										height={im.h}
-										format="webp"
-										quality={68}
 										class="max-h-full w-auto max-w-full object-contain"
 										loading="lazy"
+										decoding="async"
 									/>
+									<span class="sr-only">(agrandir dans un nouvel onglet)</span>
 								</a>
 							))}
 						</div>
