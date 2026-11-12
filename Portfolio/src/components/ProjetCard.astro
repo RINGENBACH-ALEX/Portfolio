@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { getImageUrl } from "../backend.mjs";
 import Icon from "./Icon.astro";
+import { projetPath } from "../lib/seo.js";
 
 interface Props {
 	projet: {
@@ -39,12 +40,15 @@ const {
 // cover de la carte : "affiche", avec repli sur la 1re "image"
 const img = getImageUrl(p, "affiche") ?? getImageUrl(p, "image");
 const typeLabel = p.type ? (TYPES[p.type] ?? p.type) : "";
-const href = p.id ? `/projet/${p.id}` : undefined;
+const href = p.id ? projetPath(p) : undefined;
 const host = p.lien ? new URL(p.lien).hostname.replace(/^www\./, "") : "";
 
 const isLg = size === "lg";
 const splitPad = isLg ? "p-6 sm:p-10 lg:p-12" : "p-5 sm:p-6";
-const splitImgW = isLg ? "w-[40%] sm:w-[46%] lg:w-[48%]" : "w-[38%] sm:w-[42%]";
+// mobile : image en bandeau au-dessus du texte ; dès sm : image à gauche
+const splitImgW = isLg
+	? "aspect-[16/10] w-full sm:aspect-auto sm:w-[46%] lg:w-[48%]"
+	: "aspect-[16/10] w-full sm:aspect-auto sm:w-[42%]";
 const splitEyebrow = isLg
 	? "text-xs tracking-[.25em]"
 	: "text-[10px] tracking-[.22em]";
@@ -52,7 +56,7 @@ const splitTitle = isLg
 	? "mt-2 text-2xl leading-tight sm:mt-3 sm:text-4xl lg:text-5xl"
 	: "mt-1 text-xl leading-tight sm:text-2xl";
 const splitDesc = isLg
-	? "mt-3 line-clamp-3 text-sm leading-relaxed text-white sm:mt-4 sm:line-clamp-4 sm:text-base lg:text-lg"
+	? "mt-3 line-clamp-2 text-sm leading-relaxed text-white sm:mt-4 sm:line-clamp-4 sm:text-base lg:text-lg"
 	: "mt-2 line-clamp-2 text-sm leading-relaxed text-white sm:line-clamp-3";
 const splitBtnPad = isLg ? "px-6 py-3.5 text-xs" : "px-4 py-2.5 text-[11px]";
 ---
@@ -61,13 +65,13 @@ const splitBtnPad = isLg ? "px-6 py-3.5 text-xs" : "px-4 py-2.5 text-[11px]";
 	variant === "split" ? (
 		<article
 			class:list={[
-				"group relative flex overflow-hidden rounded-[2rem] border border-white/15 bg-ink/60 backdrop-blur-sm transition duration-500 hover:-translate-y-1.5 hover:border-crimson hover:shadow-[0_34px_70px_-32px_rgba(0,0,0,.75)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+				"group relative flex flex-col overflow-hidden rounded-[2rem] border sm:flex-row border-white/15 bg-ink/60 backdrop-blur-sm transition duration-500 hover:-translate-y-1.5 hover:border-crimson hover:shadow-[0_34px_70px_-32px_rgba(0,0,0,.75)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
 				className,
 			]}
 		>
 			{/* liseré crimson qui se déploie au survol */}
 			<span
-				class="absolute inset-y-0 left-0 z-10 w-[3px] origin-top scale-y-0 bg-crimson transition-transform duration-500 group-hover:scale-y-100 motion-reduce:transition-none"
+				class="absolute inset-x-0 top-0 z-10 h-[3px] origin-left scale-x-0 bg-crimson transition-transform duration-500 group-hover:scale-x-100 motion-reduce:transition-none sm:inset-x-auto sm:inset-y-0 sm:left-0 sm:h-auto sm:w-[3px] sm:origin-top sm:scale-x-100 sm:scale-y-0 sm:group-hover:scale-y-100"
 				aria-hidden="true"
 			/>
 

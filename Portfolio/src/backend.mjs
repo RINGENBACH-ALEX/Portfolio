@@ -1,4 +1,5 @@
 import PocketBase from "pocketbase";
+import { slugify } from "./lib/seo.js";
 
 const pb = new PocketBase("https://api.alex-ringenbach.fr");
 
@@ -89,11 +90,31 @@ export function recentFirst(records) {
     return [...records].sort((a, b) => when(b).localeCompare(when(a)));
 }
 
+// Adresse lisible de chaque projet (/projet/<slug>/), tirée du titre.
+// Un champ `slug` rempli dans PocketBase est prioritaire. En cas de titres
+// identiques, le plus ancien garde le slug nu, les suivants prennent -2, -3…
+// (attribué dans l'ordre de création : un nouveau projet ne vole jamais
+// l'adresse d'un ancien).
+export function withSlugs(records) {
+    const pris = new Set();
+    const parCreation = [...records].sort((a, b) =>
+        String(a.created ?? "").localeCompare(String(b.created ?? "")),
+    );
+    for (const r of parCreation) {
+        const base = slugify(r.slug || r.titre) || r.id;
+        let s = base;
+        for (let n = 2; pris.has(s); n++) s = `${base}-${n}`;
+        pris.add(s);
+        r.slug = s;
+    }
+    return records;
+}
+
 export async function allProjets() {
     const records = await pb.collection("projets").getFullList({
         expand: "competences"
     });
-    return recentFirst(records);
+    return recentFirst(withSlugs(records));
 }
 
 export async function allProjetsByType() {

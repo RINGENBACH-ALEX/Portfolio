@@ -30,6 +30,27 @@ export function abs(path = "/") {
 	return new URL(path, SITE.url).href;
 }
 
+/**
+ * Texte -> segment d'URL lisible : « Site personnalisation de chaussure »
+ * -> "site-personnalisation-de-chaussure". Accents retirés, 60 car. max.
+ */
+export function slugify(text = "") {
+	const s = text
+		.normalize("NFD")
+		.replace(/[̀-ͯ]/g, "")
+		.toLowerCase()
+		.replace(/&/g, " et ")
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "");
+	// trop long : on coupe au dernier tiret pour ne pas tronquer un mot
+	return s.length > 60 ? s.slice(0, 60).replace(/-[^-]*$/, "") : s;
+}
+
+/** Chemin de la page d'un projet (slug calculé par backend.mjs, id en secours). */
+export function projetPath(p) {
+	return `/projet/${p.slug || p.id}/`;
+}
+
 /** Tronque un texte proprement (sur un mot) pour une meta description. */
 export function excerpt(text = "", max = 160) {
 	const t = text.trim().replace(/\s+/g, " ");

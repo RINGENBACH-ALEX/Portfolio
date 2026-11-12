@@ -40,7 +40,7 @@ Phase « Qualité » (point 6 du cahier des charges). J'ai demandé à Claude Co
 
 1. **Audité le build de production.** Lighthouse sur 8 pages, recherche dans le HTML généré, inspection de la base PocketBase, test A/B pour mesurer le coût des animations.
 2. **Proposé et appliqué des corrections**, détaillées dans `QUALITE.md` :
-   - `projet/[id].astro` : les liens « agrandir » pointaient vers `http://127.0.0.1:8090`. Ils utilisent maintenant `getImage()` et pointent vers les WebP générées au build.
+   - `projet/[slug].astro` : les liens « agrandir » pointaient vers `http://127.0.0.1:8090`. Ils utilisent maintenant `getImage()` et pointent vers les WebP générées au build.
    - `CompetenceCard.astro` : animation des jauges au scroll (`animation-timeline: view()`) remplacée par une transition déclenchée une seule fois par un `IntersectionObserver`. Coût mesuré : 7,7 s de travail du thread principal avant, 2,1 s après.
    - `ProjetCard.astro` : suppression de l'`aria-label` qui contredisait le libellé visible, ajout de « (nouvel onglet) » pour les lecteurs d'écran, ajout d'une prop `eager`.
    - `projets.astro` : `<h2>` masqué pour corriger la hiérarchie des titres, 2 premières cartes en `eager`.
@@ -49,6 +49,8 @@ Phase « Qualité » (point 6 du cahier des charges). J'ai demandé à Claude Co
    - `contact.astro` : mention RGPD sous le formulaire, vouvoiement harmonisé dans les messages.
    - `mentions-legales.astro` : suppression de la fausse mention « Google Fonts », ajout du transfert hors UE (FormSubmit), d'une durée de conservation, de la CNIL, de la licence OFL de la police et d'une mention de l'usage de l'IA.
    - `About.astro`, `profil.astro` : « Montbeliard » → « Montbéliard ».
+   - Mobile : cartes projet empilées (image au-dessus du texte) dans le carrousel de l'accueil, débordement horizontal corrigé sur `/projets` (`grid-cols-1`), filtres en grille 2 colonnes. Problème repéré par moi en testant le site sur mobile.
+   - Référencement : URL lisibles pour les projets (`/projet/radiance/` au lieu de l'identifiant PocketBase), redirection des anciennes adresses déjà déclarées dans Search Console, `/` final sur tous les liens internes, dates `lastmod` dans le sitemap.
 3. **Rédigé une première version** de `QUALITE.md` et de ce fichier.
 
 ### Ce que j'ai vérifié, modifié ou rejeté
@@ -71,7 +73,7 @@ Phase « Qualité » (point 6 du cahier des charges). J'ai demandé à Claude Co
 
 Je dois pouvoir expliquer chacun de ces éléments devant le jury. Je l'ai coché après l'avoir relu et compris.
 
-- [ ] Génération statique des pages projet : `getStaticPaths()` dans `src/pages/projet/[id].astro`, appel à PocketBase **au build uniquement**
+- [ ] Génération statique des pages projet : `getStaticPaths()` dans `src/pages/projet/[slug].astro`, appel à PocketBase **au build uniquement**
 - [ ] Optimisation d'images : `<Image>` / `getImage()` d'`astro:assets` (WebP, redimensionnement, `widths` / `sizes`)
 - [ ] Grille : `.grid-page`, `.col-full`, `.col-prose` et l'ordre des `@layer` Tailwind
 - [ ] Carrousel (`src/scripts/carousel.js`) : défilement, clavier, glisser à la souris

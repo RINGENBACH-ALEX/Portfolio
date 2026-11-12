@@ -31,13 +31,13 @@ try {
 
 			<Carousel
 				label="Projets"
-				moreHref="/projets"
+				moreHref="/projets/"
 				moreLabel="Voir tous les projets"
 				tone="light"
 			>
 				{
 					projets.map((p) => (
-						<li class="h-96 w-full shrink-0 snap-start sm:h-104 lg:h-120">
+						<li class="w-full shrink-0 snap-start sm:h-104 lg:h-120">
 							<ProjetCard
 								projet={p}
 								variant="split"

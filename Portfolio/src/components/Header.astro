@@ -1,17 +1,18 @@
 ---
-import logo from "../assets/logo.webp";
+// version détourée (fond transparent) : plus de carré noir sur le fond encre
+import logo from "../assets/logo-transparent.webp";
 import Icon from "./Icon.astro";
 
 const links = [
-	{ href: "/projets", label: "Projets" },
-	{ href: "/profil", label: "Profil" },
-	{ href: "/competences", label: "Compétences" },
-	{ href: "/contact", label: "Contact" },
+	{ href: "/projets/", label: "Projets" },
+	{ href: "/profil/", label: "Profil" },
+	{ href: "/competences/", label: "Compétences" },
+	{ href: "/contact/", label: "Contact" },
 ];
 
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isCurrent = (href: string) =>
-	href === "/" ? path === "/" : path.startsWith(href);
+	href === "/" ? path === "/" : path.startsWith(href.replace(/\/$/, ""));
 ---
 
 <header class="absolute inset-x-0 top-0 z-30 grid-page py-6">
@@ -28,9 +29,9 @@ const isCurrent = (href: string) =>
 			<img
 				src={logo.src}
 				alt=""
-				width="64"
-				height="64"
-				class="h-14 w-14 sm:h-16 sm:w-16"
+				width="52"
+				height="52"
+				class="h-14 w-14 p-3 sm:h-16 sm:w-16 sm:p-4"
 			/>
 			<span class="hidden text-xs tracking-[.25em] sm:block">
 				ALEX RINGENBACH
@@ -79,7 +80,7 @@ const isCurrent = (href: string) =>
 	>
 		<div class="flex items-center justify-between">
 			<a href="/" aria-label="Alex Ringenbach — accueil">
-				<img src={logo.src} alt="" width="48" height="48" class="h-12 w-12" />
+				<img src={logo.src} alt="" width="52" height="52" class="h-12 w-12 p-2.5" />
 			</a>
 			<button
 				type="button"

@@ -12,7 +12,7 @@ import {
 	competencesOfProjet,
 	processusOfProjet,
 } from "../../backend.mjs";
-import { breadcrumbNode, abs, excerpt } from "../../lib/seo.js";
+import { breadcrumbNode, abs, excerpt, projetPath } from "../../lib/seo.js";
 
 export async function getStaticPaths() {
 	let projets: any[] = [];
@@ -20,11 +20,11 @@ export async function getStaticPaths() {
 		projets = await allProjets();
 	} catch (e) {
 		console.error(
-			"projet/[id] — PocketBase indisponible :",
+			"projet/[slug] — PocketBase indisponible :",
 			(e as Error).message,
 		);
 	}
-	return projets.map((p) => ({ params: { id: p.id }, props: { projet: p } }));
+	return projets.map((p) => ({ params: { slug: p.slug }, props: { projet: p } }));
 }
 
 const TYPES: Record<string, string> = {
@@ -102,14 +102,14 @@ const meta = [typeLabel && { k: "Type", v: typeLabel }].filter(
 const jsonLd = [
 	breadcrumbNode([
 		{ name: "Accueil", path: "/" },
-		{ name: "Réalisations", path: "/projets" },
-		{ name: p.titre, path: `/projet/${p.id}` },
+		{ name: "Réalisations", path: "/projets/" },
+		{ name: p.titre, path: projetPath(p) },
 	]),
 	{
 		"@type": "CreativeWork",
 		name: p.titre,
 		description: p.description,
-		url: abs(`/projet/${p.id}`),
+		url: abs(projetPath(p)),
 		...(p.lien ? { sameAs: p.lien } : {}),
 		...(ogImg ? { image: abs(ogImg.src) } : {}),
 		...(competences.length
@@ -140,7 +140,7 @@ const jsonLd = [
 
 		<div class="grid-page relative z-1">
 			<div class="col-full lg:col-span-9">
-				<BackLink href="/projets" label="Réalisations" tone="muted" />
+				<BackLink href="/projets/" label="Réalisations" tone="muted" />
 
 				{
 					typeLabel && (
@@ -320,7 +320,7 @@ const jsonLd = [
 			}
 
 			<div class="col-full">
-				<BackLink href="/projets" label="Toutes les réalisations" />
+				<BackLink href="/projets/" label="Toutes les réalisations" />
 			</div>
 		</div>
 	</section>

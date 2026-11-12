@@ -28,7 +28,7 @@ const total = filtres.reduce((n, f) => n + f.count, 0);
 
 // segment : actif = fond blanc, texte encre
 const segment =
-	"group inline-flex flex-1 items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-3 py-3 text-xs font-bold uppercase tracking-[.12em] text-white transition hover:bg-white/10 aria-pressed:bg-white aria-pressed:text-ink sm:flex-none sm:px-6 sm:tracking-[.18em]";
+	"group inline-flex min-w-0 items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-2 py-3 text-[11px] font-bold uppercase tracking-widest text-white transition hover:bg-white/10 aria-pressed:bg-white aria-pressed:text-ink sm:px-6 sm:text-xs sm:tracking-[.18em]";
 const badge =
 	"hidden rounded-full bg-white/15 px-2 py-0.5 text-[10px] tabular-nums tracking-normal group-aria-pressed:bg-ink group-aria-pressed:text-white sm:inline";
 ---
@@ -42,7 +42,7 @@ const badge =
 	<div
 		role="group"
 		aria-label={label}
-		class="flex w-full flex-wrap gap-1 rounded-[1.75rem] border border-white/20 bg-ink/90 p-1.5 shadow-xl backdrop-blur sm:w-fit"
+		class="grid w-full grid-cols-2 gap-1 rounded-[1.75rem] border border-white/20 bg-ink/90 p-1.5 shadow-xl backdrop-blur sm:flex sm:w-fit sm:flex-wrap [&>:last-child:nth-child(odd)]:col-span-2"
 	>
 		<button type="button" class={segment} data-filtre="tous" aria-pressed="true">
 			Tous

@@ -35,7 +35,7 @@ Pour chaque critère : **pourquoi il compte sur ce site**, **ce que j'ai vérifi
 | /profil | 95 | 100 | 100 | 127 Kio | 7 | 196 | 1,8 s |
 | /contact | 100 | 100 | 100 | 38 Kio | 6 | 133 | 1,2 s |
 | /mentions-legales | 100 | 100 | 100 | 39 Kio | 6 | 158 | 1,2 s |
-| /projet/… (Radiance) | 100 | 100 | 100 | 85 Kio | 11 | 204 | 1,6 s |
+| /projet/radiance/ | 100 | 100 | 100 | 85 Kio | 11 | 204 | 1,6 s |
 | 404 | 100 | 100 | 69 \* | 38 Kio | 6 | — | 1,2 s |
 
 \* Le SEO de la 404 est volontairement bas : la page est en `noindex`.
@@ -69,7 +69,7 @@ CLS = 0 sur toutes les pages. Le score de performance varie de ± 5 points d'un 
 | P4 | **Chargement de l'image principale (LCP)** | Audit `lcp-lazy-loaded` | **Corrigé :** sur `/projets`, l'image LCP (1re carte) était en lazy. Les 2 premières cartes sont maintenant chargées en `eager` (prop `eager` de `ProjetCard`). |
 | P5 | **Polices** | Onglet réseau | Une seule police d'affichage (Bevan) : **21 Ko** en woff2, sous-ensemble latin, auto-hébergée, `preload` + `font-display: swap`. Texte courant en police système (Arial) : 0 octet téléchargé. ✅ |
 | P6 | **JavaScript** | Lighthouse `bootup-time` | Aucun framework côté client : les scripts (menu, carrousel, filtres, formulaire) sont inline et pèsent quelques Ko. Évaluation des scripts : **< 60 ms** par page. ✅ |
-| P7 | **Pas de serveur applicatif** | `grep 127.0.0.1` sur `dist/` | Site 100 % statique : aucune requête vers PocketBase en production. Cela a mis au jour un **bug corrigé** : les liens « agrandir l'image » des 9 pages projet pointaient vers `http://127.0.0.1:8090/…` (le PocketBase local), donc des liens morts en ligne. Ils pointent maintenant vers les WebP générées au build (`projet/[id].astro`). |
+| P7 | **Pas de serveur applicatif** | `grep 127.0.0.1` sur `dist/` | Site 100 % statique : aucune requête vers PocketBase en production. Cela a mis au jour un **bug corrigé** : les liens « agrandir l'image » des 9 pages projet pointaient vers `http://127.0.0.1:8090/…` (le PocketBase local), donc des liens morts en ligne. Ils pointent maintenant vers les WebP générées au build (`projet/[slug].astro`). |
 | P8 | **CSS** | Audit `render-blocking-resources` | Un seul fichier CSS de 45 Ko (Tailwind purgé), bloquant au rendu (~110 à 150 ms estimés). **Accepté** : l'intégrer dans le HTML le répéterait dans chaque page. |
 
 **EcoIndex :** à mesurer en ligne (ecoindex.fr ou extension GreenIT-Analysis). Les entrées de calcul sont faibles : 133 à 380 nœuds DOM, 6 à 20 requêtes, 38 à 172 Kio.
@@ -80,10 +80,10 @@ CLS = 0 sur toutes les pages. Le score de performance varie de ± 5 points d'un 
 |---|---|---|---|
 | R1 | **`<title>` et meta description uniques** : 16 pages, dont 9 générées depuis PocketBase | `grep '<title>'` sur `dist/` | Titre propre à chaque page, au format « Projet — Type par Alex Ringenbach ». La description des pages projet est tirée de PocketBase et tronquée à 160 caractères sur un mot entier (`excerpt()`). ✅ |
 | R2 | **Plan du site et robots** | Lecture de `sitemap-0.xml` et `robots.txt` | Sitemap généré automatiquement (15 URL, 404 exclue) et déclaré dans `robots.txt`. 404 en `noindex`. ✅ |
-| R3 | **URL canoniques** | `grep canonical` | Une balise `canonical` absolue par page, cohérente avec le sitemap (barre oblique finale). ✅ **À vérifier en ligne :** les liens internes n'ont pas de `/` final. Si Apache (Infomaniak) redirige `/projets` vers `/projets/`, chaque clic coûte une redirection 301 (`curl -I`). |
+| R3 | **URL canoniques** | `grep canonical` sur `dist/`, `curl -I` sur le site en ligne | Une balise `canonical` absolue par page, cohérente avec le sitemap (barre oblique finale). `curl` a montré qu'Apache redirige `/projets` vers `/projets/` (301) : chaque clic interne coûtait une redirection. **Corrigé :** tous les liens internes finissent par `/`, et `trailingSlash: "always"` dans `astro.config.mjs` fait échouer en dev tout lien qui l'oublierait. Vérifié : 0 lien interne sans `/` final dans `dist/`. ✅ |
 | R4 | **Données structurées** : portfolio d'une personne, donc « compréhensible par une machine » au sens le plus littéral | Lecture du JSON-LD généré | `Person` (métier, ville, réseaux en `sameAs`), `WebSite`, `ProfilePage`, `BreadcrumbList` sur chaque page, `CreativeWork` par projet, `ItemList` pour les compétences. **À faire :** valider dans le *Rich Results Test* de Google une fois en ligne. |
 | R5 | **Partage sur les réseaux** : le lien du site sera posté sur LinkedIn | Lecture des balises `og:*` | Open Graph + Twitter Card sur toutes les pages. Image 1200×630 générale, et **image propre à chaque projet** générée au build. ✅ |
-| R6 | **URL lisibles** | Lecture du sitemap | ❌ **Non corrigé :** les pages projet utilisent l'identifiant PocketBase (`/projet/rjir3cejevcqtt0`). Correction prévue : ajouter un champ `slug` dans PocketBase et l'utiliser dans `getStaticPaths()`. |
+| R6 | **URL lisibles** | Lecture du sitemap | Les pages projet utilisaient l'identifiant PocketBase (`/projet/rjir3cejevcqtt0/`), sans mot-clé. **Corrigé :** adresse tirée du titre (`/projet/radiance/`, `/projet/site-personnalisation-de-chaussure/`) par `slugify()` (`lib/seo.js`) et `withSlugs()` (`backend.mjs`), page renommée `projet/[slug].astro`. Les anciennes adresses étaient déjà dans le sitemap déclaré à Google Search Console : chacune redirige vers la nouvelle (`redirects` dans `astro.config.mjs`, page `noindex` + `canonical`) et est exclue du sitemap. Le sitemap indique aussi la date de mise à jour (`lastmod`) de chaque projet, tirée de PocketBase. ✅ |
 | R7 | **Sémantique** | Voir A2 | Un `h1` par page, des `nav` nommées, `main`, `footer`. ✅ |
 
 ## 4. Conformité juridique
@@ -106,5 +106,4 @@ CLS = 0 sur toutes les pages. Le score de performance varie de ± 5 points d'un 
 1. Mettre le site en ligne, puis refaire Lighthouse, `curl -I` (redirections, HTTPS) et l'EcoIndex **sur le domaine**.
 2. Retirer `pocketbase/pb_data/` du dépôt (`.gitignore` + `git rm --cached`) et changer le mot de passe administrateur PocketBase.
 3. Faire un test NVDA et un test de zoom à 200 %.
-4. Ajouter des URL lisibles (`slug`) pour les projets.
-5. Corriger la couleur de survol rouge sur fond noir, ou documenter ce choix.
+4. Corriger la couleur de survol rouge sur fond noir, ou documenter ce choix.
