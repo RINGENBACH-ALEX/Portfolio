@@ -13,7 +13,7 @@ try {
 	competences = await allCompetencesByCategorie();
 } catch (e) {
 	console.error(
-		"Page compétences — PocketBase indisponible :",
+		"Page maîtrises — PocketBase indisponible :",
 		(e as Error).message,
 	);
 }
@@ -38,11 +38,11 @@ const filtres = filtresFrom(competences, "categorie", CATEGORIES);
 const jsonLd = [
 	breadcrumbNode([
 		{ name: "Accueil", path: "/" },
-		{ name: "Compétences", path: "/competences/" },
+		{ name: "Mes maîtrises", path: "/maitrises/" },
 	]),
 	{
 		"@type": "ItemList",
-		name: "Compétences d'Alex Ringenbach",
+		name: "Maîtrises d'Alex Ringenbach",
 		itemListElement: competences.map((c, i) => ({
 			"@type": "ListItem",
 			position: i + 1,
@@ -53,16 +53,15 @@ const jsonLd = [
 ---
 
 <Layout
-	title="Compétences — Alex Ringenbach"
-	description="Savoir-être, logiciels, langages et usage de l'IA : les compétences d'Alex Ringenbach, designer graphique, avec son niveau pour chacune."
+	title="Mes maîtrises — Alex Ringenbach"
+	description="Savoir-être, logiciels, langages et usage de l'IA : ce que maîtrise Alex Ringenbach, designer graphique, avec son niveau pour chacun."
 	jsonLd={jsonLd}
 >
-	<PageIntro eyebrow="Compétences" title="Ce que j'apporte." seed={7}>
+	<PageIntro eyebrow="Mes maîtrises" title="Ce que j'apporte." seed={7}>
 		<p class="mt-6 max-w-xl text-lg text-white">
 			Les outils ne font pas tout : ma façon de travailler compte autant que
 			les logiciels et les langages que j'utilise, ou que l'IA que
-			j'intègre à ma pratique. Pour chaque compétence, mon niveau de
-			maîtrise.
+			j'intègre à ma pratique. Pour chacun, mon niveau de maîtrise.
 		</p>
 	</PageIntro>
 
@@ -73,10 +72,10 @@ const jsonLd = [
 					competences.length > 0 && (
 						<FilterBar
 							filtres={filtres}
-							label="Filtrer les compétences par catégorie"
+							label="Filtrer mes maîtrises par catégorie"
 							param="categorie"
-							statut={["compétence affichée", "compétences affichées"]}
-							vide="Aucune compétence dans cette catégorie pour le moment."
+							statut={["élément affiché", "éléments affichés"]}
+							vide="Rien dans cette catégorie pour le moment."
 						/>
 					)
 				}
@@ -103,7 +102,7 @@ const jsonLd = [
 				{
 					competences.length === 0 && (
 						<p class="text-ink/60">
-							Les compétences ne sont pas disponibles pour le moment.
+							Mes maîtrises ne sont pas disponibles pour le moment.
 						</p>
 					)
 				}

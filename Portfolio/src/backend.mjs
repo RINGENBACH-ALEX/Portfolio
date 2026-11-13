@@ -156,6 +156,30 @@ export function competencesOfProjet(projet) {
     return projet?.expand?.competences ?? [];
 }
 
+// L'éditeur de PocketBase (TinyMCE) encode les accents et la ponctuation en
+// entités HTML (&eacute;, &rsquo;, &#39;…). Le corps des étapes est inséré en
+// HTML (set:html) donc s'affiche bien, mais le titre est affiché comme texte :
+// il faut le décoder, sinon on voit « l'id&eacute;e ».
+const ENTITES = {
+    amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ",
+    rsquo: "’", lsquo: "‘", rdquo: "”", ldquo: "“", laquo: "«", raquo: "»",
+    hellip: "…", ndash: "–", mdash: "—", euro: "€", deg: "°",
+    oelig: "œ", OElig: "Œ", aelig: "æ", AElig: "Æ", szlig: "ß",
+};
+const ACCENTS = { acute: "́", grave: "̀", circ: "̂", uml: "̈", cedil: "̧", tilde: "̃", ring: "̊" };
+export function decodeEntites(texte = "") {
+    return texte.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => {
+        if (e[0] === "#") {
+            const n = e[1].toLowerCase() === "x" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+            return Number.isFinite(n) ? String.fromCodePoint(n) : m;
+        }
+        if (e in ENTITES) return ENTITES[e];
+        // lettres accentuées : &eacute; = e + accent aigu, &Ccedil; = C + cédille…
+        const acc = /^([a-z])(acute|grave|circ|uml|cedil|tilde|ring)$/i.exec(e);
+        return acc ? (acc[1] + ACCENTS[acc[2]]).normalize("NFC") : m;
+    });
+}
+
 // processus (champ éditeur HTML) -> étapes { titre, html }
 // chaque <h3> démarre une étape, son contenu va jusqu'au <h3> suivant.
 // Le numéro "1." saisi dans PocketBase est retiré (la carte l'affiche déjà).
@@ -165,8 +189,7 @@ export function processusOfProjet(projet) {
     const re = /<h3[^>]*>([\s\S]*?)<\/h3>([\s\S]*?)(?=<h3|$)/g;
     let m;
     while ((m = re.exec(html)) !== null) {
-        const titre = m[1]
-            .replace(/<[^>]+>/g, "")
+        const titre = decodeEntites(m[1].replace(/<[^>]+>/g, ""))
             .replace(/^\s*\d+\s*[.)-]\s*/, "")
             .trim();
         etapes.push({ titre, html: m[2].trim() });

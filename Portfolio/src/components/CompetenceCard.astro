@@ -67,7 +67,7 @@ const logo = getImageUrl(c, "Logo");
 	/* Les jauges se remplissent UNE fois, quand la carte entre dans l'écran.
 	   Avant : une animation liée au scroll (animation-timeline: view()) par
 	   jauge, soit ~76 timelines recalculées à chaque image -> 7,7 s de travail
-	   du thread principal mesurées par Lighthouse sur /competences.
+	   du thread principal mesurées par Lighthouse sur /maitrises/.
 	   Ici : une simple transition déclenchée par IntersectionObserver.
 	   Sans JS (classe .js-lvl jamais posée) -> jauges pleines directement. */
 	@media (prefers-reduced-motion: no-preference) {

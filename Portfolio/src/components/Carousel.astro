@@ -4,7 +4,7 @@ import Icon from "./Icon.astro";
 interface Props {
 	moreHref: string;
 	moreLabel: string;
-	/** nom accessible du carrousel (ex. "Compétences") */
+	/** nom accessible du carrousel (ex. "Mes maîtrises") */
 	label: string;
 	/** "dark" = sur fond clair, "light" = sur fond foncé/rouge */
 	tone?: "light" | "dark";
@@ -41,7 +41,7 @@ const railFill = tone === "light" ? "bg-white" : "bg-crimson";
 		<slot />
 	</ul>
 
-	<div class:list={["mt-8 flex items-center gap-4", controls]}>
+	<div class:list={["mt-8 flex flex-wrap items-center gap-x-4 gap-y-4", controls]}>
 		<button
 			type="button"
 			data-prev
@@ -89,7 +89,8 @@ const railFill = tone === "light" ? "bg-white" : "bg-crimson";
 			href={moreHref}
 			data-more
 			class:list={[
-				"ml-1 hidden shrink-0 items-center gap-2 rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[.18em] transition",
+				// mobile : ligne à part, pleine largeur (sinon la rangée déborde du viewport)
+				"hidden w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-center text-xs font-bold uppercase tracking-[.18em] transition sm:ml-1 sm:w-auto sm:shrink-0",
 				more,
 			]}
 		>

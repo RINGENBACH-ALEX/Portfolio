@@ -23,7 +23,10 @@ try {
 // Anciennes adresses /projet/<id PocketBase>/ (déjà connues de Google)
 // -> nouvelle adresse lisible /projet/<slug>/.
 /** @type {Record<string, string>} */
-const redirects = {};
+const redirects = {
+	// ancienne page « Compétences », renommée « Mes maîtrises »
+	"/competences/": "/maitrises/",
+};
 for (const p of projets) {
 	if (p.slug && p.slug !== p.id) redirects[`/projet/${p.id}/`] = projetPath(p);
 }
