@@ -1,0 +1,10 @@
+# Le projet Astro est dans le sous-dossier Portfolio/ du dépôt.
+[build]
+  base = "Portfolio"
+  command = "npm run build"
+  # relatif à `base` -> Portfolio/dist
+  publish = "dist"
+
+[build.environment]
+  # package.json exige Node >= 22.12
+  NODE_VERSION = "22"
