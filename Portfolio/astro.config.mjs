@@ -49,7 +49,10 @@ export default defineConfig({
 	integrations: [
 		sitemap({
 			// pages de redirection exclues : seule la nouvelle adresse est déclarée
-			filter: (page) => !Object.keys(redirects).some((old) => page === new URL(old, SITE.url).href),
+			// (et la page de maintenance, jamais à indexer)
+			filter: (page) =>
+				page !== new URL("/maintenance/", SITE.url).href &&
+				!Object.keys(redirects).some((old) => page === new URL(old, SITE.url).href),
 			serialize(item) {
 				const d = lastmod.get(item.url);
 				return d ? { ...item, lastmod: d } : item;

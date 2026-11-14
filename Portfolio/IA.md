@@ -5,7 +5,6 @@
 | Codex (OpenAI) | Début de l'intégration | Essai de fond animé pour l'accueil (abandonné) |
 | Claude Code (VS Code) | Intégration (août – sept. 2026) | Code Astro / Tailwind, pages, connexion PocketBase, responsive, performance, accessibilité, SEO |
 | Claude Code | Qualité (nov. 2026) | Audit Lighthouse / axe, corrections, première version de `QUALITE.md` et de ce fichier |
-| Figma MCP (via Claude Code) | [À COMPLÉTER] | [À COMPLÉTER] |
 
 Part du code écrite avec assistance : [À COMPLÉTER].
 
@@ -25,7 +24,7 @@ Part du code écrite avec assistance : [À COMPLÉTER].
 **Codex.** Le résultat ne correspondait pas à ma demande : rejeté, travail repris avec Claude Code. [À COMPLÉTER : rien n'en subsiste / ce qui en reste.]
 
 **Claude Code, intégration.**
-- Fond animé : premier marbre refusé (« on dirait des taches de vache »), puis marbre retiré pour ne garder que les vagues SVG.
+- Fond animé : premier marbre refusé , puis marbre retiré pour ne garder que les vagues SVG.
 - Voile en dégradé du hero supprimé ; section compétences sans vagues ; image et texte inversés sur la page profil.
 - Informations inventées par l'IA (dates, établissement, bac, outils, loisirs, ville) remplacées par les miennes.
 - `backend.mjs` : fonctions inutiles supprimées ; champ `type` ajouté dans PocketBase pour regrouper les projets.

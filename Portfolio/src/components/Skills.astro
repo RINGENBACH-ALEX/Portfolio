@@ -5,7 +5,11 @@ import Carousel from "./Carousel.astro";
 
 let competences: any[] = [];
 try {
-	competences = (await allCompetences()).slice(0, 5);
+	// pas de soft skills dans le carrousel d'accueil : elles restent
+	// visibles sur /maitrises/
+	competences = (await allCompetences())
+		.filter((c) => c.categorie !== "Soft Skill")
+		.slice(0, 5);
 } catch (e) {
 	console.error(
 		"Carrousel compétences — PocketBase indisponible :",

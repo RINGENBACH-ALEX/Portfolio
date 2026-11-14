@@ -1,0 +1,134 @@
+---
+// Formulaire de contact partagé (page Contact + page de maintenance).
+import Field from "./Field.astro";
+import { MAINTENANCE } from "../lib/maintenance.js";
+
+interface Props {
+	/** objet du mail reçu */
+	mailSubject?: string;
+	class?: string;
+}
+
+const { mailSubject = "Nouveau message — portfolio", class: className = "" } =
+	Astro.props;
+
+// Endpoint FormSubmit (aucun backend requis, offre gratuite).
+// Au 1er envoi tu recevras un mail d'activation à valider une seule fois.
+// Pour masquer l'adresse : crée une clé sur https://formsubmit.co et
+// remplace l'email par la clé (ex. "a1b2c3d4-....").
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/alex.ringenbach0@gmail.com";
+---
+
+<form
+	id="contact-form"
+	method="POST"
+	action={FORM_ENDPOINT.replace("/ajax/", "/")}
+	data-endpoint={FORM_ENDPOINT}
+	aria-label="Formulaire de contact"
+	class:list={[
+		"rounded-4xl border border-white/10 bg-[#0c0c12] p-6 text-left sm:p-8",
+		className,
+	]}
+>
+	<div class="grid gap-4 sm:grid-cols-2">
+		<Field name="name" label="Nom" autocomplete="name" />
+		<Field name="email" label="Email" type="email" autocomplete="email" />
+	</div>
+	<Field name="subject" label="Sujet" class="mt-4" />
+	<Field name="message" label="Message" rows={5} class="mt-4" />
+
+	{/* anti-spam : champ caché, doit rester vide */}
+	<input
+		type="text"
+		name="_honey"
+		tabindex="-1"
+		autocomplete="off"
+		aria-hidden="true"
+		class="hidden"
+	/>
+	<input type="hidden" name="_captcha" value="false" />
+	<input type="hidden" name="_template" value="table" />
+	<input type="hidden" name="_subject" value={mailSubject} />
+
+	<button
+		type="submit"
+		class="mt-6 w-full rounded-full bg-crimson px-6 py-3 text-xs font-bold uppercase tracking-[.2em] text-white transition hover:bg-white hover:text-crimson disabled:cursor-not-allowed disabled:opacity-50"
+	>
+		Envoyer
+	</button>
+
+	<p class="mt-4 text-xs leading-relaxed text-white">
+		Vos nom, e-mail et message servent uniquement à vous répondre. Ils
+		transitent par le service FormSubmit et ne sont ni revendus ni
+		réutilisés.
+		{
+			/* en maintenance, ce lien ramènerait sur la page de maintenance */
+			!MAINTENANCE && (
+				<a
+					href="/mentions-legales/#donnees"
+					class="underline decoration-crimson underline-offset-2"
+				>
+					Données personnelles et droits
+				</a>
+			)
+		}
+	</p>
+
+	<p id="form-status" class="mt-4 hidden text-sm" role="status" aria-live="polite">
+	</p>
+</form>
+
+<script>
+	const form = document.getElementById(
+		"contact-form",
+	) as HTMLFormElement | null;
+	const status = document.getElementById("form-status");
+
+	function setStatus(msg: string, ok: boolean) {
+		if (!status) return;
+		status.textContent = msg;
+		status.classList.remove("hidden");
+		status.style.color = ok ? "#7cfc98" : "#ff6b81";
+	}
+
+	form?.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		const btn = form.querySelector(
+			"button[type=submit]",
+		) as HTMLButtonElement;
+		const data = new FormData(form);
+		if (data.get("_honey")) return; // bot
+
+		btn.disabled = true;
+		btn.textContent = "Envoi…";
+		try {
+			const res = await fetch(form.dataset.endpoint!, {
+				method: "POST",
+				headers: { Accept: "application/json" },
+				body: data,
+			});
+			const json = await res.json().catch(() => ({}));
+			if (res.ok) {
+				form.reset();
+				setStatus(
+					"Message envoyé, merci ! Je vous réponds très vite.",
+					true,
+				);
+			} else {
+				setStatus(
+					json?.message ||
+						"Envoi impossible pour le moment. Réessayez ou écrivez-moi par e-mail.",
+					false,
+				);
+			}
+		} catch {
+			setStatus(
+				"Erreur réseau. Réessayez ou écrivez-moi directement par e-mail.",
+				false,
+			);
+		} finally {
+			btn.disabled = false;
+			btn.textContent = "Envoyer";
+		}
+	});
+</script>
